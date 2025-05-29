@@ -36,7 +36,7 @@
             </div>
 
             <div class="form-group">
-                <label for="lost_item_name" class="form-label-font-compact">Nama Barang Hilang</label>
+                <label for="lost_item_name" class="form-label-font-compact">Nama Barang Ditemukan</label>
                 <input type="text" name="lost_item_name" id="lost_item_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 custom-input-style" value="{{ old('lost_item_name') }}">
                 @error('lost_item_name')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->text('item_description')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('social_media')->nullable();
-            $table->string('item_photo')->nullable(); 
+            $table->string('item_photo')->nullable();
+            $table->enum('status', ['diklaim', 'none'])->default('none'); 
             $table->string('lost_location'); 
             $table->date('lost_date');    
             $table->timestamps();
