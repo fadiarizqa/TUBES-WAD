@@ -9,7 +9,7 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $table = 'comments';
+    protected $table = 'comment';
 
     protected $fillable = ['user_id', 'post_type', 'post_id', 'content'];
 
@@ -18,6 +18,6 @@ class Comment extends Model
     }
 
     public function comments() {
-        return $this->belongsTo(Comments::class);
+        return $this->belongsTo(Comment::class);
     }
 }

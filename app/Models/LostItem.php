@@ -11,13 +11,21 @@ class LostItem extends Model
 
     protected $table = 'lost_items';
 
-    protected $fillable = ['user_id', 'title', 'description', 'location', 'lost_date', 'status', 'title', 'claimed_by'];
+    protected $fillable = [
+        'posting_type',
+        'full_name',
+        'lost_item_name',
+        'item_type',
+        'item_description',
+        'phone_number',
+        'social_media',
+        'item_photo',
+        'lost_location',
+        'lost_date',
+    ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
-    }
-
-    public function lostItem() {
-        return $this->belongsTo(LostItem::class);
     }
 }
