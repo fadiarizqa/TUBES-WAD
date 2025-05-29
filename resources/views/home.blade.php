@@ -1,4 +1,4 @@
-@extends('layout.app')
+@extends('layouts.app')
 
 @section('title', 'Home')
 
@@ -6,3 +6,6 @@
     <h1>Selamat datang, {{ Auth::user()->name }}!</h1>
     <p>Ini adalah halaman utama setelah login.</p>
 @endsection
+
+<x-sidebar />
+

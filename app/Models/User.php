@@ -24,7 +24,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    // UBAH INI:
+ 
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',

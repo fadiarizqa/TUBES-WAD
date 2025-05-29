@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
@@ -12,9 +13,9 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        if (Auth::check()) {
-            return redirect()->route('home');
-        }
+        // if (Auth::check()) {
+        //     return redirect()->route('home');
+        // }
         return view('auth.login');
     }
 
@@ -22,30 +23,36 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'exists:users,email'],
             'password' => ['required'],
         ]);
 
-        $remember = $request->has('remember');
+        Log::info('Login attempt', ['email' => $credentials['email']]);
 
-        if (Auth::attempt($credentials, $remember)) {
+        if (Auth::attempt($credentials)) {
+            Log::info('Login successful', ['email' => $credentials['email']]);
             $request->session()->regenerate();
-            dd('Login berhasil');
-            return redirect('/home')->with('success', 'Login berhasil!');
+            return redirect()->route('home')->with('success', 'Login berhasil!');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah!',
-        ]);
+        Log::warning('Login failed', ['email' => $credentials['email']]);
+        
+        return back()
+            ->withInput()
+            ->withErrors([
+                'email' => 'Email atau password yang Anda masukkan salah.',
+            ]);
     }
 
     public function logout(Request $request)
     {
+        $email = Auth::user()->email; 
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        Log::info('User logged out', ['email' => $email]);
         return redirect('/')->with('success', 'Anda telah berhasil logout!');
     }
 }
