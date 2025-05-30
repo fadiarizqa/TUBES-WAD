@@ -3,8 +3,38 @@
 <head>
     <title>Carikeun</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="{{ asset('css/style.css') }}"> -->
     <style>
+        .sidebar-item {
+                    display: flex;
+                    padding: 12px 20px;
+                    align-items: center;
+                    gap: 12px;
+                    align-self: stretch;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    color: #374151;
+                    text-decoration: none;
+                    margin: 0.25rem 0.75rem;
+                    border-radius: 0.5rem;
+                    font-size: 14px;
+                    line-height: 22px;
+                    letter-spacing: 0.042px;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .sidebar-item.active {
+            background-color: #080F2B;
+            color: #FFF;
+            font-weight: 500;
+            box-shadow: 0 2px 4px -1px rgba(59, 130, 246, 0.4);
+        }
+        .sidebar-item.active:hover {
+            background-color: #080F2B;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -86,12 +116,19 @@
             cursor: pointer;
 
         }
-    
     </style>
 </head>
 <body>
-    <div class="container">
-        @yield('content')
+    <div class="flex-layout">
+        @include('components.sidebar')
+
+        <div class="main-content">
+            @include('components.navbar')
+
+            <div class="p-6">
+                @yield('content')
+            </div>
+        </div>
     </div>
 </body>
 </html>

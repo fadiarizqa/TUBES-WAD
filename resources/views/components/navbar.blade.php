@@ -1,10 +1,10 @@
-<!-- resources/views/components/navbar.blade.php -->
 <div class="navbar">
-    <div class="navbar-left">
-        <strong>Carikeun</strong>
+    <div>
+        <strong>@yield('page-title', 'Home')</strong>
     </div>
-    <div class="navbar-right">
+    <div>
         <span>{{ Auth::user()->name }}</span>
-        <a href="#"><i class="fa fa-user"></i></a>
+        <button class="ml-2 bg-gray-200 px-2 py-1 rounded">👤</button>
     </div>
 </div>
+
