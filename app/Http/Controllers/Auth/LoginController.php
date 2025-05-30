@@ -53,6 +53,6 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         Log::info('User logged out', ['email' => $email]);
-        return redirect('/')->with('success', 'Anda telah berhasil logout!');
+        return redirect('/login')->with('success', 'Anda telah berhasil logout!');
     }
 }

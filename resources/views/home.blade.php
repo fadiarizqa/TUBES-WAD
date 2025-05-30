@@ -7,5 +7,4 @@
     <p>Ini adalah halaman utama setelah login.</p>
 @endsection
 
-<x-sidebar />
 

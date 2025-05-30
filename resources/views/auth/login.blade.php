@@ -1,6 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('content')
+
 @if(session('error') || session('success'))
     @php
         $type = session('error') ? 'error' : 'success';

@@ -14,12 +14,17 @@ return new class extends Migration
         Schema::create('found_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('title');
-            $table->text('description');
-            $table->text('location');
-            $table->dateTime('found_date');
-            $table->enum('status_ditemukan', ['ditemukan', 'diklaim', 'none'])->default('ditemukan');
-            $table->string('claimed_by');
+            $table->string('posting_type');
+            $table->string('full_name');
+            $table->string('found_item_name');
+            $table->string('item_type');
+            $table->text('item_description')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('social_media')->nullable();
+            $table->string('item_photo')->nullable();
+            $table->string('found_location');
+            $table->date('found_date'); 
+            $table->enum('status', ['ditemukan', 'diklaim', 'none'])->default('ditemukan');
             $table->timestamps();
         });
     }

@@ -1,42 +1,181 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    background-color: #000;
-    color: #fff;
-    padding: 15px;
-}
+        *{
+            box-sizing: border-box;
+        }
 
+        /* Styling buat halaman login dan register */
+        .form-login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+       }
+       .form-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 24px;
+        width: 540px;
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 400px;
+        }
+        .header-text{
+        color: #111111;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 600px;
+        line-height: 120%;
+        letter-spacing: -0.56px;
+        width: 100%;
+        }
+        .form-group{
+            width:100%;
+        }
+        .form-label {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 120%;
+        text-align: left;
+        width: 100%;
+        }
+        .input-field {
+        width: 100%;
+        margin-top: 8px;
+        padding: 10px 12px;
+        font-family: inherit;
+        border-radius: 12px;
+        font-size: 16px;    
+        outline: none;
+        }
+        .button-submit {
+            padding: 12px 20px;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            border-radius: 100px;
+            background: #080F2B;
+            color: #FFF;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 22px;
+            letter-spacing: 0.042px;
+            font-family: inherit;
+            width: 100%;
+            cursor: pointer;
+        }
+
+/* Styling buat sidebar */
 .sidebar {
-    width: 200px;
-    background-color: #f4f4f4;
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.sidebar ul {
-    list-style: none;
+    width: 248px;
+    background: #ffffff;
     padding: 0;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
-.sidebar ul li {
-    margin: 10px 0;
-}
-
-.sidebar ul li a {
-    color: #000;
-    text-decoration: none;
-}
-
-.container {
+.sidebar-items {
+    padding: 20px 12px;
+    height: 100%;
     display: flex;
+    flex-direction: column;
+}
+
+.sidebar-items h2 {
+    color: #111111  ;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #334155;
+    letter-spacing: -0.025em;
+}
+
+.sidebar-items ul {
+    padding: 20px 12px;
+    list-style: none;
+    flex: 1;
+}
+
+.sidebar-items li {
+    padding: 20px 12px;
+}
+
+.sidebar-item {
+    width: 168px;
+    display: block;
+    display: flex;
+    padding: 12px 20px;
+    align-items: center;
+    gap: 12.462px;
+    align-self: stretch;
+    text-decoration: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sidebar-item:hover {
+    background: #d8e0ff;
+    color:#080F2B;;
+    transform: translateX(4px);
+}
+
+.sidebar-item:active,
+.sidebar-item.active {
+    background: #080F2B;
+    color: #ffffff;
+}
+
+.logout-btn {
+    display: block;
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: transparent;
+    border: 1px solid #ef4444;
+    color: #ef4444;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.logout-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .main-content {
+    margin-left: 292px;
     flex: 1;
-    padding: 20px;
+    background-color: #ffffff;
 }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #080F2B;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+        }
+
+        /* --- Primary Button Hover Style --- */
+        .btn-primary:hover {
+            background-color: #080F2B;
+        }
+
+        /* --- Main Content Area Padding to clear fixed header --- */
+        .main-content-area {
+            padding-top: 5.5rem; /* Menyesuaikan tinggi header fixed */
+        }
