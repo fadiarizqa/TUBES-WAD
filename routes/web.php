@@ -12,22 +12,6 @@ use App\Http\Controllers\LostItemController;
 use App\Http\Controllers\UserController;
 
 
-// Claim Routes
-
-// Comment Routes
-
-// Founded Item Routes
-
-// History Routes
-
-// Lost Item Routes
-Route::get('/lost_items', [LostItemController::class, 'index'])->name('lost_items.index');
-Route::get('/lost_items/create', [LostItemController::class, 'create'])->name('lost_items.create');
-Route::post('/lost_items', [LostItemController::class, 'store'])->name('lost_items.store');
-
-
-
-
 Route::middleware('guest')->group(function() {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
@@ -39,8 +23,9 @@ Route::middleware('guest')->group(function() {
 Route::middleware('auth')->group(function() {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-    
-    
+    Route::get('/lost_items', [LostItemController::class, 'index'])->name('lost_items.index');
+    Route::get('/lost_items/create', [LostItemController::class, 'create'])->name('lost_items.create');
+    Route::post('/lost_items', [LostItemController::class, 'store'])->name('lost_items.store');
     Route::get('/founded_items', [FoundedItemController::class, 'index'])->name('founded_items.index');
     Route::get('/founded_items/create', [FoundedItemController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemController::class, 'store'])->name('founded_items.store');
