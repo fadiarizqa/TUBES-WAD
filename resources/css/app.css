@@ -1,4 +1,19 @@
-/* Wrapper full page */
+
+@import 'tailwindcss';
+@import './components.css';
+
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
 body {
     background-color: #f3f4f6;
     margin: 0;
@@ -9,10 +24,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    
 }
 
-/* Container card */
 .login-container {
     background-color: #111111;
     padding: 30px;
@@ -22,7 +35,6 @@ body {
     max-width: 400px;
 }
 
-/* Title */
 .login-container h2 {
     font-size: 24px;
     font-weight: 600;
@@ -30,7 +42,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Form group */
 .form-input {
     margin-bottom: 16px;
 }
@@ -43,7 +54,6 @@ label {
     color: #333;
 }
 
-/* Input field */
 .input-field {
     width: 100%;
     padding: 10px 12px;
@@ -62,14 +72,12 @@ label {
     border-color: #e3342f !important;
 }
 
-/* Error text */
 .text-red-500 {
     color: #e3342f;
     font-size: 12px;
     margin-top: 4px;
 }
 
-/* Checkbox */
 .flex {
     display: flex;
     align-items: center;
@@ -84,7 +92,6 @@ label {
     color: #555;
 }
 
-/* Button */
 .btn-primary {
     width: 100%;
     padding: 10px;
@@ -101,7 +108,6 @@ label {
     background-color: #2779bd;
 }
 
-/* Alert messages */
 .bg-red-500 {
     background-color: #e3342f;
 }
