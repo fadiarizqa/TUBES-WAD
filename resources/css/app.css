@@ -1,13 +1,150 @@
+/* 1. Import Tailwind & custom components */
 @import 'tailwindcss';
 @import './components.css';
 
+/* 2. Tailwind Source Scanning (hanya jika Tailwind v4+) */
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-
+/* 3. Custom Tailwind Theme */
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* 4. Custom CSS (untuk halaman login atau layout tertentu) */
+body {
+    background-color: #f3f4f6;
+    margin: 0;
+}
+
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    background-color: #111111;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-container h2 {
+    font-size: 24px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-input {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.input-field:focus {
+    border-color: #3490dc;
+    outline: none;
+}
+
+.border-red-500 {
+    border-color: #e3342f !important;
+}
+
+.text-red-500 {
+    color: #e3342f;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+}
+
+.mr-2 {
+    margin-right: 8px;
+}
+
+.text-sm {
+    font-size: 14px;
+    color: #555;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 10px;
+    background-color: #3490dc;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #2779bd;
+}
+
+.bg-red-500 {
+    background-color: #e3342f;
+}
+
+.bg-green-500 {
+    background-color: #38c172;
+}
+
+.text-white {
+    color: #fff;
+}
+
+.p-4 {
+    padding: 16px;
+}
+
+.rounded-lg {
+    border-radius: 8px;
+}
+
+.mb-6 {
+    margin-bottom: 24px;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.right-5 {
+    right: 20px;
+}
+
+.font-bold {
+    font-weight: bold;
 }
