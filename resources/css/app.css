@@ -1,8 +1,5 @@
 
 @import 'tailwindcss';
-@import './components.css';
-
-
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -80,7 +77,6 @@ label {
 
 .flex {
     display: flex;
-    align-items: center;
 }
 
 .mr-2 {
@@ -144,6 +140,12 @@ label {
     right: 20px;
 }
 
-.font-bold {
-    font-weight: bold;
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.conatainer .main-content {
+    background-color: rebeccapurple;
+    width: 100vw;
 }

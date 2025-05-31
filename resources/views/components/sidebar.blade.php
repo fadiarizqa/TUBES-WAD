@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
-
-<div class="sidebar">
-    <div class="sidebar-items">
-        <h2 class="text-xl font-bold mb-4">Carikeun</h2>
-        
-        <ul>
+    <div class="sidebar fixed bg-white">
+        <h2 class="flex justify-center text-xl font-bold mb-4 mt-2">Carikeun</h2>
+        <ul class="flex flex-col gap-5">
             <li><a href="{{ url('/home') }}" class="sidebar-item">Beranda</a></li>
             <li><a href="{{ url('/founded_items/create') }}" class="sidebar-item">Posting Barang</a></li>
             <li><a href="{{ url('/riwayat-posting') }}" class="sidebar-item">Riwayat Posting</a></li>
@@ -24,10 +21,4 @@
             </li>
         </ul>
     </div>
-</div>
-
-<div class="main-content">
-    <div class="content-wrapper fade-in">
-        <!-- Konten Anda di sini -->
-    </div>
-</div>
+</body>
