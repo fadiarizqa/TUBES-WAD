@@ -12,7 +12,7 @@
         <ul class="flex flex-col gap-5">
             <li><a href="{{ url('/home') }}" class="sidebar-item">Beranda</a></li>
             <li><a href="{{ url('/founded_items/create') }}" class="sidebar-item">Posting Barang</a></li>
-            <li><a href="{{ url('/riwayat-posting') }}" class="sidebar-item">Riwayat Posting</a></li>
+            <li><a href="{{ url('/history') }}" class="sidebar-item">Riwayat Posting</a></li>
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

@@ -9,7 +9,10 @@ class HistoryController extends Controller
 {
     public function index()
     {
-        return History::all();
+        $history = History::latest()->get();
+        return view('history.index', compact('history'));
+        // return History::all();
+        
     }
 
     public function store(Request $request)
