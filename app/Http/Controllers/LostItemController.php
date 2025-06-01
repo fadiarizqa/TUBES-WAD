@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LostItem;
+use App\Models\FoundedItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -62,4 +63,15 @@ class LostItemController extends Controller
         $lostItems = LostItem::latest()->get();
         return view('lost_items.index', compact('lostItems'));
     }
+
+    public function show($id)
+    {
+        
+        $item = LostItem::findOrFail($id);
+
+        
+        return view('lost_itsems.show', compact('item'));
+    }
+
+    
 }

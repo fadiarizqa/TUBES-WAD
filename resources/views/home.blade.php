@@ -35,14 +35,15 @@
                         <input class="form-control mr-sm-2 w-full" type="search" name="search" placeholder="Search" aria-label="Search">
                     </div>
                     <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
-                        <x-card/>
+                        @foreach ($items as $item)
+                            <x-card 
+                                :nama="$item->nama"
+                                :deskripsi="$item->deskripsi"
+                                :foto="$item->foto"
+                                :id="$item->id"
+                                :type="$item->type"
+                            />
+                        @endforeach
                     </div>
                 </div>
             </div>

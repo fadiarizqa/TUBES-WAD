@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;
+use App\Models\LostItem;
+
 
 class FoundedItemController extends Controller
 {
@@ -56,4 +58,13 @@ class FoundedItemController extends Controller
         $foundedItems = FoundedItem::latest()->get();
         return view('founded_items.index', compact('foundedItems'));
     }
+
+    public function show($id)
+    {
+        
+        $item = FoundedItem::findOrFail($id);
+        
+        return view('founded_items.show', compact('item'));
+    }
+
 }

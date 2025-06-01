@@ -37,12 +37,24 @@
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">
                                 <label for="posting_type" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Jenis Posting</label>
-                                <select name="posting_type" id="posting_type" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: auto; min-height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.65rem 2.5rem 0.65rem 0.75rem; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23000%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.5rem 1.5rem;">
-                                        <option value="Barang Hilang" {{ old('posting_type', 'Barang Hilang') == 'Barang Hilang' ? 'selected' : '' }}>Barang Hilang</option>
+                                <select id="posting_type" name="posting_type" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: auto; min-height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.65rem 2.5rem 0.65rem 0.75rem; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%23000%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.5rem 1.5rem;">
+                                        <option value="Barang Hilang" {{ ($posting_type ?? '') === 'Barang Hilang' ? 'selected' : '' }}>Barang Hilang</option>
+                                        <option value="Barang Ditemukan" {{ ($posting_type ?? '') === 'Barang Ditemukan' ? 'selected' : '' }}>Barang Ditemukan</option>
                                 </select>
                                 @error('posting_type')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
+                                <script>
+                                document.getElementById('posting_type').addEventListener('change', function () {
+                                    const selected = this.value;
+
+                                    if (selected === 'Barang Hilang') {
+                                        window.location.href = "{{ url('/lost_items/create') }}";
+                                    } else if (selected === 'Barang Ditemukan') {
+                                        window.location.href = "{{ url('/founded_items/create') }}";
+                                    }
+                                });
+                                </script>
                             </div>
                 
                             <div class="form-group">
