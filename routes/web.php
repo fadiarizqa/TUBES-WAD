@@ -5,7 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\FoundedItemController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ClaimController;
+use App\Http\Controllers\ClaimUserController;
+use App\Http\Controllers\ClaimResponseController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
@@ -32,5 +33,12 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/claims/create', [ClaimUserController::class, 'create'])->name('claim_user.create');
+    Route::post('/claims', [ClaimUserController::class, 'store'])->name('claim_items.store');
+
+    // Claims untuk Admin Only
+    Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
+    Route::get('/admin/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
+    Route::put('/admin/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
 
 });

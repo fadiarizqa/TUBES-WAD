@@ -55,7 +55,7 @@ class LostItemController extends Controller
             'status' => $request->status ?? 'none', 
         ]);
 
-        return redirect()->route('lost_items.create')->with('success', 'Barang hilang berhasil diposting!');
+        return redirect()->route('home')->with('success', 'Barang hilang berhasil diposting!');
     }
 
     public function index()
@@ -70,7 +70,7 @@ class LostItemController extends Controller
         $item = LostItem::findOrFail($id);
 
         
-        return view('lost_itsems.show', compact('item'));
+        return view('lost_items.show', compact('item'));
     }
 
     
