@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-    Route::get('/reports/create', [UserController::class, 'create'])->name('reports.create');
+    Route::get('/reports/create', [ReportsController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportsController::class, 'store'])->name('reports.store');
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 });

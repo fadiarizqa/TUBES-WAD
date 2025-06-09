@@ -24,7 +24,7 @@
             <x-sidebar/>
             <div class="main-content w-full p-4 ml-[300px]">
                 <div class="header flex justify-between">
-                    <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Posting Barang Ditemukan</h1>
+                    <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Laporkan Postingan</h1>
                     <div class="profile flex gap-5 items-center">
                         <p>{{ Auth::user()->name }}</p>
                         <img src="{{ asset('profile.png') }}" alt="Logo">
@@ -60,7 +60,8 @@
                                 @csrf
 
                                 {{-- Hidden item_id --}}
-                                <input type="hidden" name="item_id" value="{{ $item->id }}">
+                                <input type="hidden" name="post_id" value="{{ $item->id }}">
+                                <input type="hidden" name="post_type" value="{{ $postType }}">
 
                                 {{-- Alasan Pelaporan --}}
                                 <div>

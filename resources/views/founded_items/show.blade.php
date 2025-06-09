@@ -30,7 +30,7 @@
         </a>
 
         {{-- Tombol Report --}}
-        <a href="{{ route('reports.create') }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
+        <a href="{{ route('reports.create', ['item_id' => $item->id, 'type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
             Laporkan Postingan
         </a>
     </div>

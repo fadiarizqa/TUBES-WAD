@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Reports;
+use App\Models\LostItem;
+use App\Models\FoundedItem;
+use App\Models\User;
+
 
 class ReportsController extends Controller
 {
@@ -19,9 +23,28 @@ class ReportsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('reports.create');
+        $itemId = $request->query('item_id');
+    $type   = $request->query('type');
+
+    if (!$type || !in_array($type, ['found', 'lost'])) {
+        abort(400, 'Tipe postingan tidak valid.');
+    }
+
+    if ($type === 'found') {
+        $item = \App\Models\FoundedItem::find($itemId);
+        $postType = \App\Models\FoundedItem::class;
+    } else {
+        $item = \App\Models\LostItem::find($itemId);
+        $postType = \App\Models\LostItem::class;
+    }
+
+    if (!$item) {
+        abort(404, 'Barang tidak ditemukan.');
+    }
+
+    return view('reports.create', compact('item', 'postType'));
     }
 
     /**
