@@ -10,7 +10,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\ReportsController;
 
 Route::middleware('guest')->group(function() {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -32,5 +32,6 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-
+    Route::get('/reports/create', [UserController::class, 'create'])->name('reports.create');
+    Route::post('/reports', [ReportsController::class, 'store'])->name('reports.store');
 });
