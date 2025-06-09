@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('media_sosial');
             $table->string('lokasi_kehilangan');
             $table->date('waktu_kehilangan');
+            $table->text('deskripsi_claim');
             $table->string('bukti_kepemilikan')->nullable(); // path gambar
             $table->timestamps();
         });

@@ -56,13 +56,26 @@
 
         <div>
             <label for="lokasi" class="block text-sm font-medium text-gray-900">Lokasi kehilangan</label>
-            <input type="text" name="lokasi_kehilangan" id="lokasi" placeholder="Masukkn lokasi barang hilang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+            <input type="text" name="lokasi_kehilangan" id="lokasi" placeholder="Masukkan lokasi barang hilang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
         </div>
 
         <div>
             <label for="tanggal" class="block text-sm font-medium text-gray-900">Tanggal kehilangan</label>
             <input type="date" name="waktu_kehilangan" id="tanggal" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
         </div>
+
+        <div>
+            <label for="item_description" class="block text-sm font-medium text-gray-900 mb-1">Deskripsi Barang</label>
+            <textarea 
+                name="deskripsi_claim" 
+                id="deskripsi_claim" 
+                rows="5" 
+                placeholder="Tuliskan deskripsi klaim barangmu di sini..." 
+                class="mt-1 block w-full rounded-md border border-gray-800 shadow-sm px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 resize-vertical"
+                >{{ old('item_description') }}
+            </textarea>
+        </div>
+
 
         <div>
             <label for="foto-bukti" class="block text-sm font-medium text-gray-900">Upload bukti</label>

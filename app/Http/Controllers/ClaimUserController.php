@@ -20,6 +20,7 @@ class ClaimUserController extends Controller
             'media_sosial' => 'required|string|max:255',
             'lokasi_kehilangan' => 'required|string|max:255',
             'waktu_kehilangan' => 'required|date',
+            'deskripsi_claim' => 'required|string',
             'bukti_kepemilikan' => 'nullable|image|max:2048', // PERBAIKI: nama field konsisten
         ]);
 
@@ -34,6 +35,7 @@ class ClaimUserController extends Controller
             'media_sosial' => $validated['media_sosial'],
             'lokasi_kehilangan' => $validated['lokasi_kehilangan'],
             'waktu_kehilangan' => $validated['waktu_kehilangan'],
+            'deskripsi_claim' => 'required|string',
             'bukti_kepemilikan' => $itemPhotoPath
         ]);
 

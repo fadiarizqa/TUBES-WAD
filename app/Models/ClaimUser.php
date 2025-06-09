@@ -17,6 +17,7 @@ class ClaimUser extends Model
         'media_sosial',
         'lokasi_kehilangan',
         'waktu_kehilangan',
+        'deskripsi_claim',
         'bukti_kepemilikan',
     ];
 
