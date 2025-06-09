@@ -12,6 +12,7 @@ class LostItem extends Model
     protected $table = 'lost_items';
 
     protected $fillable = [
+        'user_id',
         'posting_type',
         'full_name',
         'lost_item_name',

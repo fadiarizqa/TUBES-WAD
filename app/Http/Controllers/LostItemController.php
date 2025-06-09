@@ -9,20 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class LostItemController extends Controller
 {
-    /**
-     * Display the form for posting a lost item.
-     */
+   
     public function create()
     {
         return view('lost_items.create');
     }
 
-    /**
-     * Store a newly created lost item in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
+
             'posting_type' => 'required|string', 
             'full_name' => 'required|string|max:255',
             'lost_item_name' => 'required|string|max:255',
@@ -33,7 +29,7 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:diklaim,none', // hanya diklaim atau none
+            'status' => 'nullable|in:diklaim,none', 
         ]);
 
         $itemPhotoPath = null;
@@ -42,6 +38,7 @@ class LostItemController extends Controller
         }
 
         LostItem::create([
+            'user_id' => auth()->id(),
             'posting_type' => $request->posting_type,
             'full_name' => $request->full_name,
             'lost_item_name' => $request->lost_item_name,
@@ -52,10 +49,10 @@ class LostItemController extends Controller
             'item_photo' => $itemPhotoPath,
             'lost_location' => $request->lost_location,
             'lost_date' => $request->lost_date,
-            'status' => $request->status ?? 'none', 
+            'status' => $request->status ?? 'Barang Hilang', 
         ]);
 
-        return redirect()->route('lost_items.create')->with('success', 'Barang hilang berhasil diposting!');
+        return redirect()->route('home')->with('success', 'Barang hilang berhasil diposting!');
     }
 
     public function index()
@@ -70,8 +67,61 @@ class LostItemController extends Controller
         $item = LostItem::findOrFail($id);
 
         
-        return view('lost_itsems.show', compact('item'));
+        return view('lost_items.show', compact('item'));
     }
+
+    public function edit($id) {
+        $item = LostItem::findOrFail($id);
+        return view('lost_items.edit', compact('item'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $item = LostItem::findOrFail($id);
+
+        $validated = $request->validate([
+            'posting_type' => 'required|string', 
+            'full_name' => 'required|string|max:255',
+            'lost_item_name' => 'required|string|max:255',
+            'item_type' => 'required|string',
+            'item_description' => 'nullable|string',
+            'phone_number' => 'nullable|string|max:20',
+            'social_media' => 'nullable|string|max:255',
+            'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'lost_location' => 'required|string|max:255',
+            'lost_date' => 'required|date',
+            'status' => 'nullable|in:ditemukan,diklaim,none'
+        ]);
+
+
+    if ($request->hasFile('item_photo')) {
+       
+        if ($item->item_photo) {
+            \Storage::disk('public')->delete($item->item_photo);
+        }
+
+        $validated['item_photo'] = $request->file('item_photo')->store('lost_items_photos', 'public');
+    }
+
+    $item->update($validated);
+
+    return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+}
+
+
+    public function destroy($id) {
+    $item = LostItem::findOrFail($id);
+
+    // Hapus file foto jika ada
+    if ($item->item_photo) {
+        \Storage::disk('public')->delete($item->item_photo);
+    }
+
+    // Hapus data dari database
+    $item->delete();
+
+    return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
+}
 
     
 }

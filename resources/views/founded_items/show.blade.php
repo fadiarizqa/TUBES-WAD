@@ -25,7 +25,7 @@
 
     {{-- Tombol Kembali --}}
     <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
         </a>
     </div>
@@ -53,7 +53,7 @@
             </div>
 
             {{-- KANAN: Detail Barang --}}
-            <div class="md:w-1/2 w-full bg-white-50 rounded-lg p-6">
+            <div class="md:w-1/2 w-full bg-white-20">
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">Detail Barang</h3>
                 <ul class="space-y-2 text-sm text-gray-700">
                     <li><span class="font-bold"></span> {{ $item->posting_type }}</li>
@@ -65,6 +65,18 @@
                     <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
                     <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
                 </ul>
+                <div class="flex justify-end space-x-4 mt-4 mt-20">
+                <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                    Edit Postingan
+                </a>
+                <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                        Hapus Postingan
+                    </button>
+                </form>
+                </div>
             </div>
 
         </div>

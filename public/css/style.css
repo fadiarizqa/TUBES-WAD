@@ -136,7 +136,7 @@ body {
     border: 1px solid #ef4444;
     color: #ef4444;
     text-decoration: none;
-    border-radius: 0.5rem;
+    border-radius: 100px;
     transition: all 0.2s ease-in-out;
     font-weight: 500;
     cursor: pointer;
