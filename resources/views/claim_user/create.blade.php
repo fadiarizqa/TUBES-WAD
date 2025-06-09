@@ -84,7 +84,6 @@
 
         {{-- Tombol --}}
         <div class="flex justify-end space-x-3 pt-4 border-t border-gray-300">
-            <button type="button" class="px-4 py-2 rounded-full border border-gray-300 text-gray-800 hover:bg-gray-200 transition">Batalkan</button>
             <button type="submit" class="px-4 py-2 rounded-full bg-gray-900 text-white hover:bg-gray-700 transition">Unggah bukti</button>
         </div>
     </form>
