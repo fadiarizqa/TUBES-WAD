@@ -157,6 +157,7 @@
                                 <div class="mt-4">
                                     <button type="submit" class="w-full" style="background-color: #080F2B; color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease; display: block; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; border: none;" onmouseover="this.style.backgroundColor='#1a233b';" onmouseout="this.style.backgroundColor='#080F2B';">Posting Barang Ditemukan</button>
                                 </div>
+                                
                             </div>
                         </div>
                     </form>
