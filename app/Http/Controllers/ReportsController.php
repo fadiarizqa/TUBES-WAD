@@ -13,7 +13,7 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        //
+        return view('reports.index', compact('reports'));
     }
 
     /**
@@ -87,6 +87,9 @@ class ReportsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $report = Reports::findOrFail($id);
+        $report->delete();
+
+        return back()->with('success', 'Laporan berhasil dihapus.');
     }
 }
