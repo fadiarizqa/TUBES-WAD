@@ -29,7 +29,32 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $request->validate([
+            'post_id'   => 'required|integer',
+            'post_type' => 'required|in:App\Models\LostItem,App\Models\FoundItem',
+            'reason'    => 'required|string|max:500',
+        ]);
+
+        // Cek apakah user sudah melaporkan postingan yang sama
+        $alreadyReported = Reports::where([
+            'user_id'   => Auth::id(),
+            'post_id'   => $request->post_id,
+            'post_type' => $request->post_type
+        ])->exists();
+
+        if ($alreadyReported) {
+            return back()->with('error', 'Kamu sudah melaporkan postingan ini sebelumnya.');
+        }
+
+        Reports::create([
+            'user_id'   => Auth::id(),
+            'post_id'   => $request->post_id,
+            'post_type' => $request->post_type,
+            'reason'    => $request->reason,
+            'status'    => 'pending'
+        ]);
+
+        return back()->with('success', 'Laporan berhasil dikirim dan akan ditinjau oleh admin.');
     }
 
     /**
@@ -37,7 +62,7 @@ class ReportsController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
     }
 
     /**
@@ -45,7 +70,16 @@ class ReportsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,rejected',
+        ]);
+
+        $report = Reports::findOrFail($id);
+        $report->update([
+            'status' => $request->status
+        ]);
+
+        return back()->with('success', 'Status laporan diperbarui.');
     }
 
     /**
