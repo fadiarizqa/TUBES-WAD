@@ -55,23 +55,6 @@
         </div>
 
         <div>
-            <label for="jenis-barang" class="block text-sm font-medium text-gray-900">Jenis barang</label>
-            <select name="jenis_barang" id="jenis-barang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600">
-                <option value="">Pilih jenis barang</option>
-                <option value="KTM">KTM</option>
-                <option value="Barang pribadi">Barang pribadi</option>
-                <option value="Barang elektronik">Barang elektronik</option>
-                <option value="Peralatan">Peralatan</option>
-
-            </select>
-        </div>
-
-        <div>
-            <label for="deskripsi" class="block text-sm font-medium text-gray-900">Deskripsi barang</label>
-            <textarea name="deskripsi_barang" id="deskripsi" rows="4" placeholder="Masukkan deskripsi barangmu yang hilang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"></textarea>
-        </div>
-
-        <div>
             <label for="lokasi" class="block text-sm font-medium text-gray-900">Lokasi kehilangan</label>
             <input type="text" name="lokasi_kehilangan" id="lokasi" placeholder="Masukkn lokasi barang hilang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
         </div>

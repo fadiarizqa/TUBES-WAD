@@ -18,8 +18,6 @@ class ClaimUserController extends Controller
             'nama_lengkap' => 'required|string|max:255',
             'nomor_telepon' => 'required|string|max:20',
             'media_sosial' => 'required|string|max:255',
-            'jenis_barang' => 'required|in:KTM,Barang pribadi,Barang elektronik,Peralatan',
-            'deskripsi_barang' => 'required|string',
             'lokasi_kehilangan' => 'required|string|max:255',
             'waktu_kehilangan' => 'required|date',
             'bukti_kepemilikan' => 'nullable|image|max:2048', // PERBAIKI: nama field konsisten
@@ -34,8 +32,6 @@ class ClaimUserController extends Controller
             'nama_lengkap' => $validated['nama_lengkap'],
             'nomor_telepon' => $validated['nomor_telepon'],
             'media_sosial' => $validated['media_sosial'],
-            'jenis_barang' => $validated['jenis_barang'],
-            'deskripsi_barang' => $validated['deskripsi_barang'],
             'lokasi_kehilangan' => $validated['lokasi_kehilangan'],
             'waktu_kehilangan' => $validated['waktu_kehilangan'],
             'bukti_kepemilikan' => $itemPhotoPath

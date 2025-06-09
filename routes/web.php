@@ -41,4 +41,4 @@ Route::middleware('auth')->group(function() {
     Route::get('/admin/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
     Route::put('/admin/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
 
-});
+}); 

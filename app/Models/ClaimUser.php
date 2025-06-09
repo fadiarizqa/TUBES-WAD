@@ -15,8 +15,6 @@ class ClaimUser extends Model
         'nama_lengkap',
         'nomor_telepon',
         'media_sosial',
-        'jenis_barang',
-        'deskripsi_barang',
         'lokasi_kehilangan',
         'waktu_kehilangan',
         'bukti_kepemilikan',

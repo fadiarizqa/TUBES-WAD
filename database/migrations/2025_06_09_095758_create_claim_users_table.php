@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('nama_lengkap');
             $table->string('nomor_telepon');
             $table->string('media_sosial');
-            $table->enum('jenis_barang', ['KTM', 'Barang pribadi', 'Barang elektronik', 'Peralatan'])->default('Barang pribadi');
-            $table->text('deskripsi_barang');
             $table->string('lokasi_kehilangan');
             $table->date('waktu_kehilangan');
             $table->string('bukti_kepemilikan')->nullable(); // path gambar
