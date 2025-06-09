@@ -30,7 +30,7 @@ class HomeController extends Controller
             ];
         });
 
-        $items = $foundedItems->merge($lostItems);
+        $items = collect($foundedItems)->merge($lostItems);
 
         return view('home', compact('items'));
 }

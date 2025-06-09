@@ -30,7 +30,11 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/create', [FoundedItemController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
+    Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
+    Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
+    Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
+    
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
 });

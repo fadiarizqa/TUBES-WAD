@@ -47,7 +47,7 @@ class FoundedItemController extends Controller
             'item_photo' => $itemPhotoPath,
             'found_location' => $validated['found_location'],
             'found_date' => $validated['found_date'],
-            'status' => $validated['status'] ?? 'ditemukan'
+            'status' => $validated['status'] ?? 'Barang Ditemukan'
         ]);
 
         return redirect()->route('home')->with('success', 'Barang ditemukan berhasil diposting!');
@@ -66,5 +66,27 @@ class FoundedItemController extends Controller
         
         return view('founded_items.show', compact('item'));
     }
+
+
+    public function edit($id) {
+        $item = FoundedItem::findOrFail($id);
+        return view('founded_items.create', compact('item'));
+    }
+
+    public function update(Request $request, $id) {
+        $item = FoundedItem::findOrFail($id);
+
+        $item->update($request->all()); 
+
+        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+    }
+
+    public function destroy($id) {
+        $item = FoundedItem::findOrFail($id);
+        $item->delete();
+
+        return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
+    }
+
 
 }

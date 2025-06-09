@@ -23,6 +23,7 @@ class LostItemController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+
             'posting_type' => 'required|string', 
             'full_name' => 'required|string|max:255',
             'lost_item_name' => 'required|string|max:255',
@@ -42,6 +43,7 @@ class LostItemController extends Controller
         }
 
         LostItem::create([
+            'user_id' => auth()->id(),
             'posting_type' => $request->posting_type,
             'full_name' => $request->full_name,
             'lost_item_name' => $request->lost_item_name,
@@ -52,10 +54,10 @@ class LostItemController extends Controller
             'item_photo' => $itemPhotoPath,
             'lost_location' => $request->lost_location,
             'lost_date' => $request->lost_date,
-            'status' => $request->status ?? 'none', 
+            'status' => $request->status ?? 'Barang Hilang', 
         ]);
 
-        return redirect()->route('lost_items.create')->with('success', 'Barang hilang berhasil diposting!');
+        return redirect()->route('home')->with('success', 'Barang hilang berhasil diposting!');
     }
 
     public function index()
@@ -70,7 +72,7 @@ class LostItemController extends Controller
         $item = LostItem::findOrFail($id);
 
         
-        return view('lost_itsems.show', compact('item'));
+        return view('lost_items.show', compact('item'));
     }
 
     
