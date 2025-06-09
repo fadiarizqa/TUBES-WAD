@@ -32,12 +32,8 @@
                 </div>
                 <hr class="mt-4"/> 
                 <div class="content p-5">
-                    <form action="{{ isset($item) ? route('founded_items.update', $item->id) : route('founded_items.store') }}"   method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
+                    <form action="{{ route('founded_items.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
                         @csrf
-
-                        @if(isset($item))
-                            @method('PUT')
-                        @endif
 
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">

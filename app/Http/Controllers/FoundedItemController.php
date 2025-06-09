@@ -70,23 +70,57 @@ class FoundedItemController extends Controller
 
     public function edit($id) {
         $item = FoundedItem::findOrFail($id);
-        return view('founded_items.create', compact('item'));
+        return view('founded_items.edit', compact('item'));
     }
 
-    public function update(Request $request, $id) {
+
+    public function update(Request $request, $id)
+    {
         $item = FoundedItem::findOrFail($id);
 
-        $item->update($request->all()); 
+        $validated = $request->validate([
+            'posting_type' => 'required|string', 
+            'full_name' => 'required|string|max:255',
+            'found_item_name' => 'required|string|max:255',
+            'item_type' => 'required|string',
+            'item_description' => 'nullable|string',
+            'phone_number' => 'nullable|string|max:20',
+            'social_media' => 'nullable|string|max:255',
+            'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'found_location' => 'required|string|max:255',
+            'found_date' => 'required|date',
+            'status' => 'nullable|in:ditemukan,diklaim,none'
+        ]);
 
-        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+
+    if ($request->hasFile('item_photo')) {
+       
+        if ($item->item_photo) {
+            \Storage::disk('public')->delete($item->item_photo);
+        }
+
+        $validated['item_photo'] = $request->file('item_photo')->store('found_items_photos', 'public');
     }
+
+    $item->update($validated);
+
+    return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+}
+
 
     public function destroy($id) {
-        $item = FoundedItem::findOrFail($id);
-        $item->delete();
+    $item = FoundedItem::findOrFail($id);
 
-        return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
+    // Hapus file foto jika ada
+    if ($item->item_photo) {
+        \Storage::disk('public')->delete($item->item_photo);
     }
+
+    // Hapus data dari database
+    $item->delete();
+
+    return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
+}
 
 
 }
