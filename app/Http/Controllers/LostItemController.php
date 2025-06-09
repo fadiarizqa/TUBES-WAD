@@ -9,17 +9,12 @@ use Illuminate\Support\Facades\Storage;
 
 class LostItemController extends Controller
 {
-    /**
-     * Display the form for posting a lost item.
-     */
+   
     public function create()
     {
         return view('lost_items.create');
     }
 
-    /**
-     * Store a newly created lost item in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -34,7 +29,7 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:diklaim,none', // hanya diklaim atau none
+            'status' => 'nullable|in:diklaim,none', 
         ]);
 
         $itemPhotoPath = null;
@@ -80,21 +75,21 @@ class LostItemController extends Controller
         return view('lost_items.edit', compact('item'));
     }
 
-        public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $item = LostItem::findOrFail($id);
 
         $validated = $request->validate([
             'posting_type' => 'required|string', 
             'full_name' => 'required|string|max:255',
-            'found_item_name' => 'required|string|max:255',
+            'lost_item_name' => 'required|string|max:255',
             'item_type' => 'required|string',
             'item_description' => 'nullable|string',
             'phone_number' => 'nullable|string|max:20',
             'social_media' => 'nullable|string|max:255',
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'found_location' => 'required|string|max:255',
-            'found_date' => 'required|date',
+            'lost_location' => 'required|string|max:255',
+            'lost_date' => 'required|date',
             'status' => 'nullable|in:ditemukan,diklaim,none'
         ]);
 

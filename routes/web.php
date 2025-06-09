@@ -34,9 +34,9 @@ Route::middleware('auth')->group(function() {
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
-    Route::get('/lost_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('lost_items.edit');
-    Route::put('/lost_items/{id}', [FoundedItemController::class, 'update'])->name('lost_items.update');
-    Route::delete('/lost_items/{id}', [FoundedItemController::class, 'destroy'])->name('lost_items.destroy');
+    Route::get('/lost_items/{id}/edit', [LostItemController::class, 'edit'])->name('lost_items.edit');
+    Route::put('/lost_items/{id}', [LostItemController::class, 'update'])->name('lost_items.update');
+    Route::delete('/lost_items/{id}', [LostItemController::class, 'destroy'])->name('lost_items.destroy');
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
 });

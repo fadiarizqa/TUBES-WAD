@@ -47,7 +47,7 @@
 
                 {{-- Nama & Deskripsi --}}
                 <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
+                    <h2 class="text-2xl font-bold text-black">{{ $item->lost_item_name }}</h2>
                     <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
                 </div>
             </div>
@@ -61,8 +61,8 @@
                     <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
                     <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
                     <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
+                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->lost_location }}</li>
+                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->lost_date)->format('d M Y') }}</li>
                     <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
                 </ul>
                 <div class="flex justify-end space-x-4 mt-4 mt-20">

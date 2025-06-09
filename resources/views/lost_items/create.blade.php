@@ -34,6 +34,7 @@
                 <div class="content p-5">
                     <form action="{{ route('lost_items.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
                         @csrf
+                        
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">
                                 <label for="posting_type" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Jenis Posting</label>

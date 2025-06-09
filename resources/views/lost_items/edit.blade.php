@@ -32,7 +32,7 @@
                 </div> 
                 <hr class="mt-4"/> 
                 <div class="content p-5">
-                    <form action="{{ route('lost_items.update') }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
+                    <form action="{{ route('lost_items.update', $item->id ) }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
                         @csrf
                         @method('PUT')
 
@@ -61,7 +61,7 @@
                 
                             <div class="form-group">
                                 <label for="full_name" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Nama Lengkap</label>
-                                <input type="text" name="full_name" id="full_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('full_name') }}">
+                                <input type="text" name="full_name" id="full_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('full_name', $item->full_name) }}">
                                 @error('full_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -69,7 +69,7 @@
                 
                             <div class="form-group">
                                 <label for="lost_item_name" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Nama Barang Hilang</label>
-                                <input type="text" name="lost_item_name" id="lost_item_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_item_name') }}">
+                                <input type="text" name="lost_item_name" id="lost_item_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_item_name', $item->lost_item_name)}}">
                                 @error('lost_item_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -94,7 +94,7 @@
                 
                             <div class="form-group">
                                 <label for="item_description" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Deskripsi Barang</label>
-                                <textarea name="item_description" id="item_description" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 220px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.75rem; box-sizing: border-box; resize: vertical; overflow: auto;">{{ old('item_description') }}</textarea>
+                                <textarea name="item_description" id="item_description" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 220px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.75rem; box-sizing: border-box; resize: vertical; overflow: auto;">{{ old('item_description', $item->item_description) }}</textarea>
                                 @error('item_description')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -102,7 +102,7 @@
                 
                             <div class="form-group">
                                 <label for="lost_location" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Lokasi Kehilangan</label>
-                                <input type="text" name="lost_location" id="lost_location" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_location') }}">
+                                <input type="text" name="lost_location" id="lost_location" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_location', $item->lost_location )}}">
                                 @error('lost_location')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -110,7 +110,7 @@
                             
                             <div class="form-group">
                                 <label for="lost_date" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Tanggal Kehilangan</label>
-                                <input type="date" name="lost_date" id="lost_date" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_date') }}">
+                                <input type="date" name="lost_date" id="lost_date" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('lost_date', $item->lost_date ) }}">
                                 @error('lost_date')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -120,7 +120,7 @@
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">
                                 <label for="phone_number" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">No Telepon</label>
-                                <input type="text" name="phone_number" id="phone_number" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('phone_number') }}">
+                                <input type="text" name="phone_number" id="phone_number" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('phone_number', $item->phone_number) }}">
                                 @error('phone_number')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -128,7 +128,7 @@
                 
                             <div class="form-group">
                                 <label for="social_media" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Social Media</label>
-                                <input type="text" name="social_media" id="social_media" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('social_media') }}">
+                                <input type="text" name="social_media" id="social_media" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('social_media', $item->social_media) }}">
                                 @error('social_media')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
