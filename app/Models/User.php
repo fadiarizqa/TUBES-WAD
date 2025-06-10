@@ -31,6 +31,10 @@ class User extends Authenticatable
     ];
     public function getFotoProfilUrlAttribute()
 {
-    return asset(file_exists(public_path($this->foto_profil)) ? $this->foto_profil : 'profile.png');
+    if (!$this->foto_profil || !file_exists(public_path($this->foto_profil))) {
+        return asset('profile.png'); 
+    }
+
+    return asset($this->foto_profil);
 }
 }
