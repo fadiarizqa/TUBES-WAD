@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('founded_item_id')->constrained('found_items')->onDelete('cascade');
             $table->enum('post_type', ['lost', 'found']);
             $table->integer('post_id');
+            $table->text('title');
             $table->text('content');
             $table->timestamps();
         });

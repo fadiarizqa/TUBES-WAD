@@ -28,15 +28,10 @@
         <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
         </a>
-
-        {{-- Tombol Report --}}
-        <a href="{{ route('reports.create', ['item_id' => $item->id, 'type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
-            Laporkan Postingan
-        </a>
     </div>
 
     {{-- Wrapper --}}
-    <div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="flex items-center justify-center flex-col">
         <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
 
             {{-- KIRI: Gambar + Nama + Deskripsi --}}
@@ -71,9 +66,9 @@
                     <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
                 </ul>
                 <div class="flex justify-end space-x-4 mt-4 mt-20">
-                  <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Edit Postingan
-                  </a>
+                <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                    Edit Postingan
+                </a>
                 <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
                     @csrf
                     @method('DELETE')
@@ -81,12 +76,49 @@
                         Hapus Postingan
                     </button>
                 </form>
-                  <a href="{{ route('claim_user.create', ['item_id' => $item->id]) }}" 
-                          class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Klaim Barang
-                  </a>
                 </div>
             </div>
+
+        </div>
+        <div class="w-full max-w-6xl bg-white p-10 m-8 border border-gray-200 rounded-xl shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Komentar</h2>
+    
+            @forelse ($item->comments as $comment)
+                <div class="bg-gray-100 p-4 mb-3 rounded-lg shadow-sm">
+                    <h3 class="font-bold">{{ $comment->title }}</h3>
+                    <p class="text-sm text-gray-700">{{ $comment->content }}</p>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Ditulis pada: {{ \Carbon\Carbon::parse($comment->created_at)->format('d-m-y H:i') }}
+                    </p>
+                </div>
+            @empty
+                <p class="text-gray-500">Belum ada komentar.</p>
+            @endforelse
+    
+            {{-- Form komentar --}}
+            <h2 class="text-xl font-semibold mt-6 mb-2">Tulis Komentar</h2>
+    
+            <form action="{{ url()->current() }}" method="POST" class="space-y-4">
+                @csrf
+                <input type="hidden" name="post_type" value="found">
+                <input type="hidden" name="post_id" value="{{ $item->id }}">
+    
+                <div>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
+                    <input type="text" name="title" id="title" class="w-full border rounded p-2" required>
+                </div>
+    
+                <div>
+                    <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
+                    <textarea name="content" id="content" rows="4" class="w-full border rounded p-2" required></textarea>
+                </div>
+    
+                <div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        Post Comment
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </body>
