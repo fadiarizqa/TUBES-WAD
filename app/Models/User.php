@@ -17,6 +17,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'foto_profil',
     ];
 
     protected $hidden = [
@@ -28,4 +29,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+    public function getFotoProfilUrlAttribute()
+{
+    return asset(file_exists(public_path($this->foto_profil)) ? $this->foto_profil : 'profile.png');
+}
 }
