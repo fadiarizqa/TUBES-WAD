@@ -34,6 +34,7 @@
                 <div class="content p-5">
                     <form action="{{ route('lost_items.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col md:flex-row gap-x-6 gap-y-4">
                         @csrf
+                        
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">
                                 <label for="posting_type" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Jenis Posting</label>
@@ -152,7 +153,7 @@
                 
                                 {{-- Button is now full width (w-full) and within the same form-group --}}
                                 <div class="mt-4">
-                                    <button type="submit" class="w-full" style="background-color: #080F2B; color: white; padding: 0.75rem 1.5rem; border-radius: 0.375rem; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease; display: block; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; border: none;" onmouseover="this.style.backgroundColor='#1a233b';" onmouseout="this.style.backgroundColor='#080F2B';">Posting Barang Hilang</button>
+                                    <button type="submit" class="w-full" style="background-color: #080F2B; color: white; padding: 0.75rem 1.5rem; border-radius: 100px; font-weight: bold; cursor: pointer; transition: background-color 0.3s ease; display: block; text-align: center; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; border: none;" onmouseover="this.style.backgroundColor='#1a233b';" onmouseout="this.style.backgroundColor='#080F2B';">Posting Barang Hilang</button>
                                 </div>
                             </div>
                         </div>

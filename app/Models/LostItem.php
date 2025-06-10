@@ -12,6 +12,7 @@ class LostItem extends Model
     protected $table = 'lost_items';
 
     protected $fillable = [
+        'user_id',
         'posting_type',
         'full_name',
         'lost_item_name',
@@ -29,4 +30,9 @@ class LostItem extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function reports() {
+        return $this->morphMany(Reports::class, 'post', 'post_type', 'post_id');
+    }
+
 }

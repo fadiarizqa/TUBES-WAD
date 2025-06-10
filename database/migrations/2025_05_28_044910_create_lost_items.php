@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lost_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('posting_type'); 
             $table->string('full_name');
             $table->string('lost_item_name'); 

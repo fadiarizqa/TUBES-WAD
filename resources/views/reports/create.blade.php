@@ -4,14 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Detail Barang Ditemukan</title>
+        <title>Laravel</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
-        
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
@@ -20,75 +19,105 @@
             </style>
         @endif
     </head>
-
-   <body class="bg-gray-100 min-h-screen relative">
-
-    {{-- Tombol Kembali --}}
-    <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-            ← Kembali ke Daftar Barang
-        </a>
-
-        {{-- Tombol Report --}}
-        <a href="{{ route('reports.create', ['item_id' => $item->id, 'type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
-            Laporkan Postingan
-        </a>
-    </div>
-
-    {{-- Wrapper --}}
-    <div class="min-h-screen flex items-center justify-center px-4 py-10">
-        <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
-
-            {{-- KIRI: Gambar + Nama + Deskripsi --}}
-            <div class="md:w-1/2 w-full">
-                {{-- Gambar --}}
-                @if ($item->item_photo)
-                    <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
-                @else
-                    <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                        Tidak ada foto
+    <body>
+        <div class="flex">
+            <x-sidebar/>
+            <div class="main-content w-full p-4 ml-[300px]">
+                <div class="header flex justify-between">
+                    <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Laporkan Postingan</h1>
+                    <div class="profile flex gap-5 items-center">
+                        <p>{{ Auth::user()->name }}</p>
+                        <img src="{{ asset('profile.png') }}" alt="Logo">
                     </div>
-                @endif
-
-                {{-- Nama & Deskripsi --}}
-                <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
-                    <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
                 </div>
-            </div>
+                {{-- Wrapper --}}
+                <div class="min-h-screen flex items-center justify-center px-4 py-10">
+                    <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
 
-            {{-- KANAN: Detail Barang --}}
-            <div class="md:w-1/2 w-full bg-white-20">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Detail Barang</h3>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li><span class="font-bold"></span> {{ $item->posting_type }}</li>
-                    <li><span class="font-semibold">Jenis Barang:</span> {{ $item->item_type }}</li>
-                    <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
-                    <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
-                    <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
-                    <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
-                </ul>
-                <div class="flex justify-end space-x-4 mt-4 mt-20">
-                  <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Edit Postingan
-                  </a>
-                <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                        Hapus Postingan
-                    </button>
-                </form>
-                  <a href="{{ route('claim_user.create', ['item_id' => $item->id]) }}" 
-                          class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Klaim Barang
-                  </a>
-                </div>
+                        {{-- KIRI: Preview Postingan --}}
+                        <div class="md:w-1/2 w-full">
+                            {{-- Gambar --}}
+                            @if ($item && $item->item_photo)
+                                <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
+                            @else
+                                <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
+                                    Tidak ada foto
+                                </div>
+                            @endif
+
+                            {{-- Nama & Deskripsi --}}
+                            <div class="mt-4">
+                                <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
+                                <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
+                            </div>
+                        </div>
+
+                        {{-- KANAN: Form Laporan --}}
+                        <div class="md:w-1/2 w-full bg-white-50 rounded-lg p-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Formulir Laporan</h3>
+
+                            <form action="{{ route('reports.store') }}" method="POST" class="space-y-4">
+                                @csrf
+
+                                {{-- Hidden item_id --}}
+                                <input type="hidden" name="post_id" value="{{ $item->id }}">
+                                <input type="hidden" name="post_type" value="{{ $postType }}">
+
+                                {{-- Alasan Pelaporan --}}
+                                <div>
+                                    <label for="reason" class="block text-sm font-medium text-gray-700">Alasan Pelaporan</label>
+                                    <textarea name="reason" id="reason" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('reason') }}</textarea>
+                                    @error('reason')
+                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                            <!-- SUBMIT -->
+                            <button type="submit"
+                                    class="bg-red-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-red-700 transition">
+                                Kirim Laporan
+                            </button>
+                        </form>
+                    </div>
+                </div>            
             </div>
         </div>
-    </div>
-</body>
+        @section('scripts')
+        <script>
+            document.getElementById('item_photo').addEventListener('change', function(e) {
+            
+            const file = e.target.files[0];
+            const container = this.parentElement;
+            const textElement = container.querySelector('div:nth-child(2)');
+            
+            
+            if (file) {
+                textElement.innerHTML = `
+                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #10B981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #065F46; margin-bottom: 4px;">File terpilih: ${file.name}</span>
+                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #047857;">Klik untuk mengubah file</span>
+                `;
+                container.style.borderColor = '#10B981';
+                container.style.backgroundColor = '#ECFDF5';
 
+                reader.readAsDataURL(file);
+            } else {
+                // Reset to initial state if no file is selected (e.g., user cancels selection)
+                textElement.innerHTML = `
+                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #6B7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                    </svg>
+                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 4px;">Klik untuk upload foto</span>
+                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #6B7280; margin-bottom: 4px;">atau drag & drop file di sini</span>
+                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 400; color: #9CA3AF;">PNG, JPG, GIF up to 5MB</span>
+                `;
+                container.style.borderColor = '#D1D5DB';
+                container.style.backgroundColor = '#F9FAFB';
+            }
+        });
+        </script>
+        @endsection
+    </body>
 </html>
