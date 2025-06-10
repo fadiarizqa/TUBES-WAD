@@ -10,7 +10,9 @@ use App\Http\Controllers\ClaimResponseController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
+
 
 
 Route::middleware('guest')->group(function() {
@@ -38,10 +40,14 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
+    Route::get('/reports/create', [ReportsController::class, 'create'])->name('reports.create');
+    Route::post('/reports', [ReportsController::class, 'store'])->name('reports.store');
+    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
     Route::get('/admin/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
     Route::put('/admin/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
+    
 
 }); 

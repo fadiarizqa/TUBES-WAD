@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Detail Barang Ditemukan</title>
+        <title>Detail Barang Hilang</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -47,7 +47,7 @@
 
                 {{-- Nama & Deskripsi --}}
                 <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
+                    <h2 class="text-2xl font-bold text-black">{{ $item->lost_item_name }}</h2>
                     <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
                 </div>
             </div>
