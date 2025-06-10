@@ -165,49 +165,34 @@
             </form>
         </div>
     </div>
-
-    {{-- Ini adalah tempat script JavaScript Anda. Penting untuk berada di sini. --}}
-    {{-- @stack('scripts') ini akan menarik semua @push('scripts') dari view child --}}
-    @stack('scripts')
-
-    {{-- Inline JavaScript untuk Inline Edit --}}
-    @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Event listener untuk semua tombol "Edit"
             document.querySelectorAll('.edit-comment-btn').forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function (event) {
                     const commentId = this.dataset.commentId;
                     console.log('Edit button clicked for comment ID:', commentId); // Debugging
-                    // Sembunyikan tampilan komentar
                     const displayDiv = document.getElementById(`comment-display-${commentId}`);
                     if (displayDiv) displayDiv.style.display = 'none';
-                    // Tampilkan form edit
                     const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
                     if (editFormDiv) editFormDiv.style.display = 'block';
                 });
             });
 
-            // Event listener untuk semua tombol "Batal" di form edit
             document.querySelectorAll('.cancel-edit-btn').forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function (event) {
                     const commentId = this.dataset.commentId;
                     console.log('Cancel button clicked for comment ID:', commentId); // Debugging
-                    // Tampilkan kembali tampilan komentar
                     const displayDiv = document.getElementById(`comment-display-${commentId}`);
                     if (displayDiv) displayDiv.style.display = 'block';
-                    // Sembunyikan form edit
                     const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
                     if (editFormDiv) editFormDiv.style.display = 'none';
                 });
             });
 
-            // Debugging: Cek apakah tombol ditemukan saat DOM siap
             console.log('Total edit buttons found:', document.querySelectorAll('.edit-comment-btn').length);
             console.log('Total cancel buttons found:', document.querySelectorAll('.cancel-edit-btn').length);
         });
     </script>
-    @endpush
 </body>
 
 </html>
