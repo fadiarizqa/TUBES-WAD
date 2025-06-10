@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function() {
     // Lost Items
     Route::get('/lost_items', [LostItemController::class, 'index'])->name('lost_items.index');
     Route::get('/lost_items/create', [LostItemController::class, 'create'])->name('lost_items.create');
+    Route::post('/lost_items', [LostItemController::class, 'store'])->name('lost_items.store');
     Route::get('/lost_items/{id}/edit', [LostItemController::class, 'edit'])->name('lost_items.edit');
     Route::put('/lost_items/{id}', [LostItemController::class, 'update'])->name('lost_items.update');
     Route::post('/lost_items/{id}/comments', [CommentController::class, 'store'])->name('comments.store');
