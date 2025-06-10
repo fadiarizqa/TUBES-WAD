@@ -27,7 +27,7 @@
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Riwayat</h1>
                     <div class="profile flex gap-5 items-center">
                         <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ asset('profile.png') }}" alt="Logo">
+                        <img src="{{ Auth::user()->foto_profil_url }}" alt="Foto Profil" class="w-10 h-10 rounded-full object-cover border">
                     </div>
                 </div>
                 <hr class="mt-4"/> 

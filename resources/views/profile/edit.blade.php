@@ -44,12 +44,10 @@
             </div>
         @endif
 
-        {{-- ✅ Foto Profil Saat Ini --}}
         <div class="flex justify-center mb-6">
             <img src="{{ asset(Auth::user()->foto_profil) }}" alt="Foto Profil Saat Ini" class="w-32 h-32 rounded-full object-cover border border-gray-300">
         </div>
 
-        {{-- ✅ Form Upload --}}
         <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="from_edit" value="1">
@@ -73,7 +71,6 @@
                 @enderror
             </div>
 
-            {{-- 🟢 Tombol Simpan --}}
             <div class="flex justify-end">
                 <button type="submit"
                         class="w-full px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
@@ -82,7 +79,6 @@
             </div>
         </form>
 
-        {{-- 🔴 Form Hapus Foto Terpisah --}}
         <form method="POST" action="{{ route('profile.destroy') }}" class="mt-4" onsubmit="return confirm('Yakin ingin menghapus foto profil?')">
             @csrf
             @method('DELETE')
