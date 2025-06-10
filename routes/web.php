@@ -12,7 +12,6 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ReportsController;
 
 
 Route::middleware('guest')->group(function() {
@@ -41,6 +40,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/create', [FoundedItemController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
+    Route::post('/founded_items/{id}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');

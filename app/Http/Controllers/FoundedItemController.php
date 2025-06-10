@@ -63,8 +63,9 @@ class FoundedItemController extends Controller
     {
         
         $item = FoundedItem::findOrFail($id);
+        $comments = $item->comments()->latest()->get();
         
-        return view('founded_items.show', compact('item'));
+        return view('founded_items.show', compact('item', 'comments'));
     }
 
 

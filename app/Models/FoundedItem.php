@@ -32,7 +32,7 @@ class FoundedItem extends Model
 
     public function comments()
     {
-        return $this->hasMany(Comment::class);
+        return $this->morphMany(Comment::class, 'post'); 
     }
 
     // public function foundedItem() {
