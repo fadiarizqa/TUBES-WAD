@@ -59,12 +59,11 @@ class FoundedItemController extends Controller
         return view('founded_items.index', compact('foundedItems'));
     }
 
-    public function show($id)
+    public function show($id) 
     {
-        
-        $item = FoundedItem::findOrFail($id);
-        $comments = $item->comments()->latest()->get();
-        
+        $item = FoundedItem::findOrFail($id); 
+        $comments = $item->comments()->latest()->get(); 
+        // dd($comments->toArray(), $item->toArray()); 
         return view('founded_items.show', compact('item', 'comments'));
     }
 

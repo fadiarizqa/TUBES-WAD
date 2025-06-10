@@ -83,18 +83,18 @@
         <div class="w-full max-w-6xl bg-white p-10 m-8 border border-gray-200 rounded-xl shadow-md">
             <h2 class="text-xl font-semibold mb-4">Komentar</h2>
     
-            @forelse ($item->comments as $comment)
-                <div class="bg-gray-100 p-4 mb-3 rounded-lg shadow-sm">
+            @forelse ($comments as $comment)
+                <div class="comment-item" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
                     <h3 class="font-bold">{{ $comment->title }}</h3>
                     <p class="text-sm text-gray-700">{{ $comment->content }}</p>
                     <p class="text-xs text-gray-500 mt-1">
-                        Ditulis pada: {{ \Carbon\Carbon::parse($comment->created_at)->format('d-m-y H:i') }}
+                        Ditulis oleh {{ $comment->user->name ?? 'Pengguna' }} pada {{ \Carbon\Carbon::parse($comment->created_at)->format('d M Y, H:i') }}
                     </p>
                 </div>
             @empty
                 <p class="text-gray-500">Belum ada komentar.</p>
             @endforelse
-    
+            
             {{-- Form komentar --}}
             <h2 class="text-xl font-semibold mt-6 mb-2">Tulis Komentar</h2>
     
