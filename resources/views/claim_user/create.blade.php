@@ -21,74 +21,78 @@
         @endif
     </head>
 
-   <body class="bg-gray-100 min-h-screen relative">
+<body class="bg-gray-100 min-h-screen p-6 pl-40">
 
     {{-- Tombol Kembali --}}
-    <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+    <div class="mb-8">
+        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
         </a>
-
-        {{-- Tombol Report --}}
-        <a href="{{ route('reports.create', ['item_id' => $item->id, 'type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
-            Laporkan Postingan
-        </a>
     </div>
 
-    {{-- Wrapper --}}
-    <div class="min-h-screen flex items-center justify-center px-4 py-10">
-        <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
+    {{-- Header --}}
+    <div class="max-w-xl mx-auto space-y-3 mb-6">
+        <h1 class="text-xl font-semibold text-gray-900">Klaim Barangmu</h1>
+        <p class="text-base text-gray-600">Jika barang yang ditemukan orang lain adalah milikmu, silakan klaim di sini!</p>
+    </div>
 
-            {{-- KIRI: Gambar + Nama + Deskripsi --}}
-            <div class="md:w-1/2 w-full">
-                {{-- Gambar --}}
-                @if ($item->item_photo)
-                    <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
-                @else
-                    <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                        Tidak ada foto
-                    </div>
-                @endif
-
-                {{-- Nama & Deskripsi --}}
-                <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
-                    <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
-                </div>
-            </div>
-
-            {{-- KANAN: Detail Barang --}}
-            <div class="md:w-1/2 w-full bg-white-20">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Detail Barang</h3>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li><span class="font-bold"></span> {{ $item->posting_type }}</li>
-                    <li><span class="font-semibold">Jenis Barang:</span> {{ $item->item_type }}</li>
-                    <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
-                    <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
-                    <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
-                    <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
-                </ul>
-                <div class="flex justify-end space-x-4 mt-4 mt-20">
-                  <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Edit Postingan
-                  </a>
-                <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                        Hapus Postingan
-                    </button>
-                </form>
-                  <a href="{{ route('claim_user.create', ['item_id' => $item->id]) }}" 
-                          class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                      Klaim Barang
-                  </a>
-                </div>
-            </div>
+    {{-- Form --}}
+    <form action="{{ route('claim_items.store') }}" method="POST" enctype="multipart/form-data" class="max-w-xl mx-auto space-y-6">
+        @csrf
+        <div>
+            <label for="nama" class="block text-sm font-medium text-gray-900">Nama lengkap</label>
+            <input type="text" name="nama_lengkap" id="nama" placeholder="Masukkan nama lengkap" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
         </div>
-    </div>
+
+        <div>
+            <label for="telepon" class="block text-sm font-medium text-gray-900">Nomor telepon</label>
+            <input type="text" name="nomor_telepon" id="telepon" placeholder="Masukkan nomor telepon" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+        </div>
+
+        <div>
+            <label for="sosmed" class="block text-sm font-medium text-gray-900">Media sosial</label>
+            <input type="text" name="media_sosial" id="sosmed" placeholder="Masukkan username media sosial" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+        </div>
+
+        <div>
+            <label for="lokasi" class="block text-sm font-medium text-gray-900">Lokasi kehilangan</label>
+            <input type="text" name="lokasi_kehilangan" id="lokasi" placeholder="Masukkan lokasi barang hilang" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+        </div>
+
+        <div>
+            <label for="tanggal" class="block text-sm font-medium text-gray-900">Tanggal kehilangan</label>
+            <input type="date" name="waktu_kehilangan" id="tanggal" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600"/>
+        </div>
+
+        <div>
+            <label for="item_description" class="block text-sm font-medium text-gray-900 mb-1">Deskripsi Barang</label>
+            <textarea 
+    name="deskripsi_claim" 
+    id="deskripsi_claim" 
+    rows="5" 
+    placeholder="Tuliskan deskripsi klaim barangmu di sini..." 
+    class="mt-1 block w-full rounded-md border border-gray-800 shadow-sm px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-blue-600 resize-vertical">{{ old('item_description') }}</textarea>
+     </div>
+
+
+        <div>
+            <label for="foto-bukti" class="block text-sm font-medium text-gray-900">Upload bukti</label>
+            <input type="file" name="bukti_kepemilikan" id="bukti_kepemilikan" accept="image/*" class="mt-2 w-full border border-gray-800 rounded-md px-3 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700"/>
+        </div>
+
+        {{-- Tombol --}}
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-300">
+            <button type="submit" class="px-4 py-2 rounded-full bg-gray-900 text-white hover:bg-gray-700 transition">Unggah bukti</button>
+        </div>
+    </form>
+
+    <script>
+        const tanggalInput = document.getElementById('tanggal');
+        const today = new Date().toISOString().split('T')[0];
+        tanggalInput.max = today;
+    </script>
+
 </body>
+
 
 </html>
