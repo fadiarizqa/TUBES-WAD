@@ -21,7 +21,7 @@ class LostItem extends Model
         'phone_number',
         'social_media',
         'item_photo',
-        'status',
+        'status' => 'none',
         'lost_location',
         'lost_date',
     ];
