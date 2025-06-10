@@ -52,7 +52,6 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
-  
     // History
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
