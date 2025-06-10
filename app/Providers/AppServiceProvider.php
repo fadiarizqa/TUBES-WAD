@@ -27,4 +27,9 @@ class AppServiceProvider extends ServiceProvider
             'lost'  => LostItem::class,    
         ]);
     }
+
+    protected $policies = [
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        'App\Models\Comment' => 'App\Policies\CommentPolicy', // <-- Tambahkan ini
+    ];
 }
