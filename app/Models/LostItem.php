@@ -31,6 +31,11 @@ class LostItem extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'post');
+    }
+    
     public function reports() {
         return $this->morphMany(Reports::class, 'post', 'post_type', 'post_id');
     }

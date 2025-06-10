@@ -31,7 +31,7 @@
     </div>
 
     {{-- Wrapper --}}
-    <div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="flex items-center justify-center flex-col ">
         <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
 
             {{-- KIRI: Gambar + Nama + Deskripsi --}}
@@ -81,12 +81,120 @@
             </div>
             
         </div>
-    </div>
+        <div class="w-full max-w-6xl bg-white p-6 md:p-10 m-4 md:m-8 border border-gray-200 rounded-xl shadow-md"> {{-- Sesuaikan padding dan margin --}}
+                <h2 class="text-xl font-semibold mb-4">Komentar</h2>
 
-    <div>
-        <!-- section comment -->
-        
+                {{-- Loop untuk Menampilkan Komentar --}}
+                @forelse ($comments as $comment)
+                    {{-- Ini adalah div pembungkus untuk SATU KOMENTAR dan FORM EDITNYA --}}
+                    <div class="comment-item" id="comment-container-{{ $comment->id }}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
+
+                        {{-- Bagian untuk MENAMPILKAN komentar (awalnya terlihat) --}}
+                        <div class="comment-display" id="comment-display-{{ $comment->id }}">
+                            <h3 class="font-bold text-lg mb-1">{{ $comment->title }}</h3> {{-- Tambah margin-bottom --}}
+                            <p class="text-gray-700 text-sm mb-2">{{ $comment->content }}</p> {{-- Tambah margin-bottom --}}
+                            <small class="text-gray-500 text-xs">
+                                Ditulis oleh {{ $comment->user->name ?? 'Pengguna' }} pada {{ \Carbon\Carbon::parse($comment->created_at)->format('d M Y, H:i') }}
+                            </small>
+
+                            <div class="comment-actions mt-3 flex space-x-2"> {{-- Tambah margin-top dan space-x --}}
+                                @can('update', $comment)
+                                    <button type="button" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition edit-comment-btn" data-comment-id="{{ $comment->id }}">Edit</button>
+                                @endcan
+
+                                @can('delete', $comment)
+                                    <form action="{{ route('comments.destroy', ['id' => $item->id, 'comment' => $comment->id]) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition">Hapus</button>
+                                    </form>
+                                @endcan
+                            </div>
+                        </div>
+
+                        {{-- Bagian untuk FORM EDIT komentar (awalnya tersembunyi) --}}
+                        <div class="comment-edit-form" id="comment-edit-form-{{ $comment->id }}" style="display: none;">
+                            <form action="{{ route('comments.update', ['id' => $item->id, 'comment' => $comment->id]) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="mb-3">
+                                    <label for="edit_title_{{ $comment->id }}" class="block text-sm font-medium text-gray-700">Judul Komentar:</label>
+                                    <input type="text" id="edit_title_{{ $comment->id }}" name="title" value="{{ old('title', $comment->title) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="edit_content_{{ $comment->id }}" class="block text-sm font-medium text-gray-700">Isi Komentar:</label>
+                                    <textarea id="edit_content_{{ $comment->id }}" name="content" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>{{ old('content', $comment->content) }}</textarea>
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Simpan</button>
+                                    <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition cancel-edit-btn" data-comment-id="{{ $comment->id }}">Batal</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div> {{-- Akhir dari comment-item container --}}
+                @empty
+                    <p class="text-gray-500">Belum ada komentar.</p>
+                @endforelse
+
+                {{-- Form Komentar Baru --}}
+                <h2 class="text-xl font-semibold mt-6 mb-2">Tulis Komentar</h2>
+
+                <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="post_type" value="found"> {{-- Pastikan ini 'found' karena ENUM --}}
+                    <input type="hidden" name="post_id" value="{{ $item->id }}">
+
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
+                        <input type="text" name="title" id="title" class="w-full border rounded p-2 mt-1" required>
+                    </div>
+
+                    <div>
+                        <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
+                        <textarea name="content" id="content" rows="4" class="w-full border rounded p-2 mt-1" required></textarea>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.edit-comment-btn').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const commentId = this.dataset.commentId;
+                    console.log('Edit button clicked for comment ID:', commentId); // Debugging
+                    const displayDiv = document.getElementById(`comment-display-${commentId}`);
+                    if (displayDiv) displayDiv.style.display = 'none';
+                    const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
+                    if (editFormDiv) editFormDiv.style.display = 'block';
+                });
+            });
+
+            document.querySelectorAll('.cancel-edit-btn').forEach(button => {
+                button.addEventListener('click', function (event) {
+                    const commentId = this.dataset.commentId;
+                    console.log('Cancel button clicked for comment ID:', commentId); // Debugging
+                    const displayDiv = document.getElementById(`comment-display-${commentId}`);
+                    if (displayDiv) displayDiv.style.display = 'block';
+                    const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
+                    if (editFormDiv) editFormDiv.style.display = 'none';
+                });
+            });
+
+            console.log('Total edit buttons found:', document.querySelectorAll('.edit-comment-btn').length);
+            console.log('Total cancel buttons found:', document.querySelectorAll('.cancel-edit-btn').length);
+        });
+    </script>
 </body>
 
 </html>
