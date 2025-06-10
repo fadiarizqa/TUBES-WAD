@@ -29,7 +29,7 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:diklaim,none', 
+            'status' => 'nullable|in:hilang,diklaim,none', 
         ]);
 
         $itemPhotoPath = null;
@@ -89,7 +89,7 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:ditemukan,diklaim,none'
+            'status' => 'nullable|in:hilang,diklaim,none'
         ]);
 
 

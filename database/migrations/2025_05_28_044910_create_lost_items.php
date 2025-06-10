@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->string('social_media')->nullable();
             $table->string('item_photo')->nullable();
-            $table->enum('status', ['diklaim', 'none'])->default('none'); 
+            $table->enum('status', ['hilang', 'diklaim', 'none'])->default('hilang'); 
             $table->string('lost_location'); 
             $table->date('lost_date');    
             $table->timestamps();
