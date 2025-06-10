@@ -12,6 +12,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
 
 
 Route::middleware('guest')->group(function() {
@@ -52,6 +53,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
+  
     // History
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
 
@@ -68,4 +70,9 @@ Route::middleware('auth')->group(function() {
     Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
     Route::get('/admin/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
     Route::put('/admin/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
+
+
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile/delete', [ProfileController::class, 'destroy'])->name('profile.destroy');
 }); 
