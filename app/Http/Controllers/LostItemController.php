@@ -64,10 +64,9 @@ class LostItemController extends Controller
     public function show($id)
     {
         
-        $item = LostItem::findOrFail($id);
-
-        
-        return view('lost_items.show', compact('item'));
+        $item = FoundedItem::findOrFail($id); 
+        $comments = $item->comments()->latest()->get(); 
+        return view('lost_items.show', compact('item', 'comments'));
     }
 
     public function edit($id) {

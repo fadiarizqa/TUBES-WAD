@@ -31,6 +31,10 @@ Route::middleware('auth')->group(function() {
     Route::get('/lost_items/create', [LostItemController::class, 'create'])->name('lost_items.create');
     Route::get('/lost_items/{id}/edit', [LostItemController::class, 'edit'])->name('lost_items.edit');
     Route::put('/lost_items/{id}', [LostItemController::class, 'update'])->name('lost_items.update');
+    Route::post('/lost_items/{id}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/lost_items/{id}/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
+    Route::put('/lost_items/{id}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('/lost_items/{id}/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/lost_items', [LostItemController::class, 'store'])->name('lost_items.store');
     Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
     Route::delete('/lost_items/{id}', [LostItemController::class, 'destroy'])->name('lost_items.destroy');
