@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 use App\Models\FoundedItem;
+use App\Models\LostItem;
 
 class AppServiceProvider extends ServiceProvider
 {

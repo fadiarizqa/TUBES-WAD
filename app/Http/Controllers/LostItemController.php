@@ -93,19 +93,18 @@ class LostItemController extends Controller
         ]);
 
 
-    if ($request->hasFile('item_photo')) {
-       
-        if ($item->item_photo) {
-            \Storage::disk('public')->delete($item->item_photo);
+        if ($request->hasFile('item_photo')) {
+        
+            if ($item->item_photo) {
+                \Storage::disk('public')->delete($item->item_photo);
+            }
+
+            $validated['item_photo'] = $request->file('item_photo')->store('lost_items_photos', 'public');
         }
 
-        $validated['item_photo'] = $request->file('item_photo')->store('lost_items_photos', 'public');
+        $item->update($validated);
+        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
     }
-
-    $item->update($validated);
-
-    return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
-}
 
 
     public function destroy($id) {
@@ -120,7 +119,7 @@ class LostItemController extends Controller
     $item->delete();
 
     return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
-}
+    }
 
     
 }

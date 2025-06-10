@@ -15,6 +15,16 @@ class CommentController extends Controller
         return Comment::all();
     }
 
+    private function getParentItem(int $id, string $postType)
+    {
+        if ($postType === 'found') {
+            return FoundedItem::findOrFail($id);
+        } elseif ($postType === 'lost') {
+            return LostItem::findOrFail($id);
+        }
+        abort(404, 'Tipe postingan tidak valid.'); 
+    }
+
     public function store(Request $request, FoundedItem $item)
     {
         $request->validate([
@@ -33,9 +43,14 @@ class CommentController extends Controller
         ]);
 
         $comment->save();
-        session()->flash('success', 'Comment berhasil disimpan!');
-        return redirect()->route('founded_items.show', ['id' => $comment->post_id])->with('success', 'Komentar berhasil ditambahkan!');
-        return back();
+
+        if ($comment->post_type === 'found') { 
+            return redirect()->route('founded_items.show', $comment->post_id)->with('success', 'Komentar berhasil ditambahkan!');
+            return back();
+        } elseif ($comment->post_type === 'lost') { 
+            return redirect()->route('lost_items.show', $comment->post_id)->with('success', 'Komentar berhasil ditambahkan!');
+            return back();
+        }
     }
 
     public function show(Comment $comment)
@@ -48,9 +63,14 @@ class CommentController extends Controller
 
     public function update(Request $request, $id, Comment $comment)
     {
-        $foundedItem = FoundedItem::findOrFail($id);
+        $parentItem = $this->getParentItem($id, $comment->post_type);
 
-        Gate::authorize('update', $comment);
+        // Verifikasi bahwa komentar ini memang milik item induk di URL
+        if ($comment->post_id !== $parentItem->id) {
+            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
+        }
+
+        Gate::authorize('update', $comment); // Policy sudah menangani otorisasi user
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -62,38 +82,49 @@ class CommentController extends Controller
             'content' => $request->input('content'),
         ]);
 
-        return redirect()->route('founded_items.show', $foundedItem->id)->with('success', 'Komentar berhasil diperbarui!');
+        // Redirect berdasarkan tipe parent item
+        if ($comment->post_type === 'found') {
+            return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
+        } elseif ($comment->post_type === 'lost') {
+            return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
+        }
+        return back()->with('error', 'Gagal memperbarui komentar. Tipe postingan tidak valid.');
     }
 
     public function edit($id, Comment $comment)
     {
-        $foundedItem = FoundedItem::findOrFail($id); // Cari objek FoundedItem secara manual
+        $parentItem = $this->getParentItem($id, $comment->post_type);
 
-        // Otorisasi
-        Gate::authorize('update', $comment);
-
-        // Validasi relasi (opsional tapi bagus)
-        if ($comment->post_id !== $foundedItem->id || $comment->post_type !== 'found') {
-            abort(404);
+        // Verifikasi bahwa komentar ini memang milik item induk di URL
+        if ($comment->post_id !== $parentItem->id) {
+            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
         }
 
-        return view('comments.edit', compact('foundedItem', 'comment')); // Kirim juga foundedItem ke view jika perlu
+        Gate::authorize('update', $comment); // Policy sudah menangani otorisasi user
+
+        // Jika Anda menggunakan form edit terpisah, ini akan menampilkan view:
+        return view('comments.edit', compact('parentItem', 'comment'));
     }
 
     public function destroy($id, Comment $comment)
     {
-        $foundedItem = FoundedItem::findOrFail($id); // Cari objek FoundedItem secara manual
+        $parentItem = $this->getParentItem($id, $comment->post_type);
 
-        // Otorisasi
-        Gate::authorize('delete', $comment);
-
-        // Validasi relasi (opsional tapi bagus)
-        if ($comment->post_id !== $foundedItem->id || $comment->post_type !== 'found') {
-            abort(404);
+        // Verifikasi bahwa komentar ini memang milik item induk di URL
+        if ($comment->post_id !== $parentItem->id) {
+            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
         }
+
+        Gate::authorize('delete', $comment); // Policy sudah menangani otorisasi user
 
         $comment->delete();
 
-        return redirect()->route('founded_items.show', $foundedItem->id)->with('success', 'Komentar berhasil dihapus!');
+        // Redirect berdasarkan tipe parent item
+        if ($comment->post_type === 'found') {
+            return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
+        } elseif ($comment->post_type === 'lost') {
+            return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
+        }
+        return back()->with('error', 'Gagal menghapus komentar. Tipe postingan tidak valid.');
     }
 }
