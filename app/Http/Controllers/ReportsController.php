@@ -33,11 +33,11 @@ class ReportsController extends Controller
     }
 
     if ($type === 'found') {
-        $item = \App\Models\FoundedItem::find($itemId);
-        $postType = \App\Models\FoundedItem::class;
+        $item = FoundedItem::find($itemId);
+        $postType = FoundedItem::class;
     } else {
-        $item = \App\Models\LostItem::find($itemId);
-        $postType = \App\Models\LostItem::class;
+        $item = LostItem::find($itemId);
+        $postType = LostItem::class;
     }
 
     if (!$item) {
