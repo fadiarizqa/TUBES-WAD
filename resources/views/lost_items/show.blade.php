@@ -25,7 +25,7 @@
 
     {{-- Tombol Kembali --}}
     <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
         </a>
     </div>
@@ -61,13 +61,31 @@
                     <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
                     <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
                     <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
+                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->lost_location }}</li>
+                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->lost_date)->format('d M Y') }}</li>
                     <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
                 </ul>
-            </div>
+                <div class="flex justify-end space-x-4 mt-4 mt-20">
+                <a href="{{ route('lost_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                    Edit Postingan
+                </a>
+                <form action="{{ route('lost_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                        Hapus Postingan
+                    </button>
+                </form>
+                </div>
 
+            </div>
+            
         </div>
+    </div>
+
+    <div>
+        <!-- section comment -->
+        
     </div>
 </body>
 

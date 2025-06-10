@@ -35,6 +35,9 @@ Route::middleware('auth')->group(function() {
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
     Route::get('/claims/create', [ClaimUserController::class, 'create'])->name('claim_user.create');
     Route::post('/claims', [ClaimUserController::class, 'store'])->name('claim_items.store');
+    Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
+    Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
+    Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
