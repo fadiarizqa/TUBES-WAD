@@ -22,8 +22,8 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function foundedItem()
+    public function postable()
     {
-        return $this->belongsTo(FoundedItem::class);
+        return $this->morphTo('post');
     }
 }

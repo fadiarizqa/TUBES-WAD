@@ -22,13 +22,17 @@ class CommentController extends Controller
         ]);
 
         $comment=new Comment([
-            'comment' => $request->comment,
             'user_id' => auth()->id(),
+            'title' => $request->input('title'),      
+            'content' => $request->input('content'),                        
+            'post_id' => $request->input('post_id'),   
+            'post_type' => $request->input('post_type'),
         ]);
 
-        $item->comments()->save($comment);
+        $comment->save();
         session()->flash('success', 'Comment berhasil disimpan!');
-        return redirect()->route('founded_items.show', ['foundedItem' => $item->id]);
+        return redirect()->route('founded_items.show', ['id' => $comment->post_id])->with('success', 'Komentar berhasil ditambahkan!');
+        return back();
     }
 
     public function show(Comment $comment)

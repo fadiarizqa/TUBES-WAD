@@ -4,14 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Detail Barang Ditemukan</title>
+        <title>Laravel</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
-        
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
@@ -20,107 +19,34 @@
             </style>
         @endif
     </head>
-
-   <body class="bg-gray-100 min-h-screen relative">
-
-    {{-- Tombol Kembali --}}
-    <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-            ← Kembali ke Daftar Barang
-        </a>
-    </div>
-
-    {{-- Wrapper --}}
-    <div class="flex items-center justify-center flex-col">
-        <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
-
-            {{-- KIRI: Gambar + Nama + Deskripsi --}}
-            <div class="md:w-1/2 w-full">
-                {{-- Gambar --}}
-                @if ($item->item_photo)
-                    <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
-                @else
-                    <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                        Tidak ada foto
+    <body>
+        <div class="flex">
+            <x-admin/>
+            <div class="main-content w-full p-4 ml-[300px]">
+                <div class="header flex justify-between">
+                    <h1 class="flex items-center">Selamat datang!</h1>
+                    <div class="profile flex gap-5 items-center">
+                        <p>{{ Auth::user()->name }}</p>
+                        <img src="{{ asset('profile.png') }}" alt="Logo">
                     </div>
-                @endif
-
-                {{-- Nama & Deskripsi --}}
-                <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
-                    <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
+                </div>
+                <div class="content">
+                    <div class="relative w-full border-2 border-gray-200 rounded-2xl p-2 mt-4">
+                        <input class="form-control mr-sm-2 w-full" type="search" name="search" placeholder="Search" aria-label="Search">
+                    </div>
+                    <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
+                        @foreach ($items as $item)
+                            <x-card 
+                                :nama="$item->nama"
+                                :deskripsi="$item->deskripsi"
+                                :foto="$item->foto"
+                                :id="$item->id"
+                                :type="$item->type"
+                            />
+                        @endforeach
+                    </div>
                 </div>
             </div>
-
-            {{-- KANAN: Detail Barang --}}
-            <div class="md:w-1/2 w-full bg-white-20">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Detail Barang</h3>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li><span class="font-bold"></span> {{ $item->posting_type }}</li>
-                    <li><span class="font-semibold">Jenis Barang:</span> {{ $item->item_type }}</li>
-                    <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
-                    <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
-                    <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
-                    <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
-                </ul>
-                <div class="flex justify-end space-x-4 mt-4 mt-20">
-                <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                    Edit Postingan
-                </a>
-                <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                        Hapus Postingan
-                    </button>
-                </form>
-                </div>
-            </div>
-
         </div>
-        <div class="w-full max-w-6xl bg-white p-10 m-8 border border-gray-200 rounded-xl shadow-md">
-            <h2 class="text-xl font-semibold mb-4">Komentar</h2>
-    
-            @forelse ($item->comments as $comment)
-                <div class="bg-gray-100 p-4 mb-3 rounded-lg shadow-sm">
-                    <h3 class="font-bold">{{ $comment->title }}</h3>
-                    <p class="text-sm text-gray-700">{{ $comment->content }}</p>
-                    <p class="text-xs text-gray-500 mt-1">
-                        Ditulis pada: {{ \Carbon\Carbon::parse($comment->created_at)->format('d-m-y H:i') }}
-                    </p>
-                </div>
-            @empty
-                <p class="text-gray-500">Belum ada komentar.</p>
-            @endforelse
-    
-            {{-- Form komentar --}}
-            <h2 class="text-xl font-semibold mt-6 mb-2">Tulis Komentar</h2>
-    
-            <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
-                @csrf
-                <input type="hidden" name="post_type" value="found">
-                <input type="hidden" name="post_id" value="{{ $item->id }}">
-
-                <div>
-                    <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
-                    <input type="text" name="title" id="title" class="w-full border rounded p-2" required>
-                </div>
-    
-                <div>
-                    <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
-                    <textarea name="content" id="content" rows="4" class="w-full border rounded p-2" required></textarea>
-                </div>
-    
-                <div>
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                        Post Comment
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</body>
-
+    </body>
 </html>
