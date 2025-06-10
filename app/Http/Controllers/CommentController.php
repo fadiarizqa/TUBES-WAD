@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\FoundedItem;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -43,18 +45,54 @@ class CommentController extends Controller
         return $comment;
     }
 
-    public function update(Request $request, Comment $comment)
+    public function update(Request $request, $id, Comment $comment)
     {
-        $comment->update($request->all());
-        return $comment;
+        $foundedItem = FoundedItem::findOrFail($id);
+
+        Gate::authorize('update', $comment);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        $comment->update([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+
+        return redirect()->route('founded_items.show', $foundedItem->id)->with('success', 'Komentar berhasil diperbarui!');
     }
 
-    public function destroy(Comment $comment)
+    public function edit($id, Comment $comment)
     {
-        $foundedId = $comment->id;
+        $foundedItem = FoundedItem::findOrFail($id); // Cari objek FoundedItem secara manual
+
+        // Otorisasi
+        Gate::authorize('update', $comment);
+
+        // Validasi relasi (opsional tapi bagus)
+        if ($comment->post_id !== $foundedItem->id || $comment->post_type !== 'found') {
+            abort(404);
+        }
+
+        return view('comments.edit', compact('foundedItem', 'comment')); // Kirim juga foundedItem ke view jika perlu
+    }
+
+    public function destroy($id, Comment $comment)
+    {
+        $foundedItem = FoundedItem::findOrFail($id); // Cari objek FoundedItem secara manual
+
+        // Otorisasi
+        Gate::authorize('delete', $comment);
+
+        // Validasi relasi (opsional tapi bagus)
+        if ($comment->post_id !== $foundedItem->id || $comment->post_type !== 'found') {
+            abort(404);
+        }
+
         $comment->delete();
-    
-        session()->flash('success', 'Comment berhasil dihapus!');
-        return redirect()->route('founded_items.show', ['item' => $foundedId]);
+
+        return redirect()->route('founded_items.show', $foundedItem->id)->with('success', 'Komentar berhasil dihapus!');
     }
 }
