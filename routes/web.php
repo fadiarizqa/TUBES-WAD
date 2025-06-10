@@ -26,20 +26,30 @@ Route::middleware('guest')->group(function() {
 Route::middleware('auth')->group(function() {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Lost Items
     Route::get('/lost_items', [LostItemController::class, 'index'])->name('lost_items.index');
     Route::get('/lost_items/create', [LostItemController::class, 'create'])->name('lost_items.create');
     Route::post('/lost_items', [LostItemController::class, 'store'])->name('lost_items.store');
+    Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
+
+    // Founded Items
     Route::get('/founded_items', [FoundedItemController::class, 'index'])->name('founded_items.index');
     Route::get('/founded_items/create', [FoundedItemController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
-    Route::get('/lost_items/{id}', [LostItemController::class, 'show'])->name('lost_items.show');
-    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
-    Route::get('/claims/create', [ClaimUserController::class, 'create'])->name('claim_user.create');
-    Route::post('/claims', [ClaimUserController::class, 'store'])->name('claim_items.store');
     Route::get('/founded_items/{id}/edit', [FoundedItemController::class, 'edit'])->name('founded_items.edit');
     Route::put('/founded_items/{id}', [FoundedItemController::class, 'update'])->name('founded_items.update');
     Route::delete('/founded_items/{id}', [FoundedItemController::class, 'destroy'])->name('founded_items.destroy');
+
+    // History
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+
+    // Claims untuk User Only
+    Route::get('/claims/create', [ClaimUserController::class, 'create'])->name('claim_user.create');
+    Route::post('/claims', [ClaimUserController::class, 'store'])->name('claim_items.store');
+
+    // Report
     Route::get('/reports/create', [ReportsController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportsController::class, 'store'])->name('reports.store');
     Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
@@ -48,6 +58,4 @@ Route::middleware('auth')->group(function() {
     Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
     Route::get('/admin/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
     Route::put('/admin/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
-    
-
 }); 
