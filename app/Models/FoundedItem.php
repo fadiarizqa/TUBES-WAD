@@ -30,8 +30,9 @@ class FoundedItem extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function reports() {
-        return $this->morphMany(Reports::class, 'post', 'post_type', 'post_id');
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     // public function foundedItem() {

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\FoundedItem;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -12,20 +12,30 @@ class CommentController extends Controller
         return Comment::all();
     }
 
-    public function store(Request $request)
+    public function store(Request $request, FoundedItem $item)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'post_type' => 'required|string',
+        $request->validate([
+            'post_type' => 'required|in:lost,found',
             'post_id' => 'required|integer',
-            'content' => 'required|string'
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
         ]);
 
-        return Comment::create($validated);
+        $comment=new Comment([
+            'comment' => $request->comment,
+            'user_id' => auth()->id(),
+        ]);
+
+        $item->comments()->save($comment);
+        session()->flash('success', 'Comment berhasil disimpan!');
+        return redirect()->route('founded_items.show', ['foundedItem' => $item->id]);
     }
 
     public function show(Comment $comment)
     {
+        $comment = FoundedItem::findOrFail($id);
+        
+        return view('founded_items.show', compact('item'));
         return $comment;
     }
 
@@ -37,7 +47,10 @@ class CommentController extends Controller
 
     public function destroy(Comment $comment)
     {
+        $foundedId = $comment->id;
         $comment->delete();
-        return response()->noContent();
+    
+        session()->flash('success', 'Comment berhasil dihapus!');
+        return redirect()->route('founded_items.show', ['item' => $foundedId]);
     }
 }

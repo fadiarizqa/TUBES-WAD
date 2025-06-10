@@ -93,34 +93,32 @@ class FoundedItemController extends Controller
         ]);
 
 
-    if ($request->hasFile('item_photo')) {
-       
+        if ($request->hasFile('item_photo')) {
+        
+            if ($item->item_photo) {
+                \Storage::disk('public')->delete($item->item_photo);
+            }
+
+            $validated['item_photo'] = $request->file('item_photo')->store('found_items_photos', 'public');
+        }
+
+        $item->update($validated);
+
+        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+    }
+
+
+    public function destroy($id) {
+        $item = FoundedItem::findOrFail($id);
+
+        // Hapus file foto jika ada
         if ($item->item_photo) {
             \Storage::disk('public')->delete($item->item_photo);
         }
 
-        $validated['item_photo'] = $request->file('item_photo')->store('found_items_photos', 'public');
+        // Hapus data dari database
+        $item->delete();
+
+        return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
     }
-
-    $item->update($validated);
-
-    return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
-}
-
-
-    public function destroy($id) {
-    $item = FoundedItem::findOrFail($id);
-
-    // Hapus file foto jika ada
-    if ($item->item_photo) {
-        \Storage::disk('public')->delete($item->item_photo);
-    }
-
-    // Hapus data dari database
-    $item->delete();
-
-    return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
-}
-
-
 }
