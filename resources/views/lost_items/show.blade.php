@@ -66,9 +66,13 @@
                     <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
                 </ul>
                 <div class="flex justify-end space-x-4 mt-4 mt-20">
+                @can('update', $item)
                 <a href="{{ route('lost_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
                     Edit Postingan
                 </a>
+                @endcan
+
+                @can('delete', $item)
                 <form action="{{ route('lost_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
                     @csrf
                     @method('DELETE')
@@ -76,6 +80,7 @@
                         Hapus Postingan
                     </button>
                 </form>
+                @endcan
                 </div>
 
             </div>

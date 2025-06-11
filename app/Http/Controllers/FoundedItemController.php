@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;
 use App\Models\LostItem;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 
 class FoundedItemController extends Controller
@@ -67,9 +68,11 @@ class FoundedItemController extends Controller
         return view('founded_items.show', compact('item', 'comments'));
     }
 
+    use AuthorizesRequests;
 
     public function edit($id) {
         $item = FoundedItem::findOrFail($id);
+        $this->authorize('update', $item);
         return view('founded_items.edit', compact('item'));
     }
 

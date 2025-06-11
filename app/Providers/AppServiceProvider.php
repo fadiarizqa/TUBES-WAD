@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 use App\Models\FoundedItem;
 use App\Models\LostItem;
+use App\Policies\LostItemPolicy;
+use App\Policies\FoundedItemPolicy;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,5 +35,6 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         'App\Models\Comment' => 'App\Policies\CommentPolicy', // <-- Tambahkan ini
+        
     ];
 }

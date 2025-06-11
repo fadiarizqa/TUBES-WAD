@@ -6,6 +6,7 @@ use App\Models\LostItem;
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class LostItemController extends Controller
 {
@@ -69,8 +70,11 @@ class LostItemController extends Controller
         return view('lost_items.show', compact('item', 'comments'));
     }
 
+    use AuthorizesRequests;
+
     public function edit($id) {
         $item = LostItem::findOrFail($id);
+        $this->authorize('update', $item);
         return view('lost_items.edit', compact('item'));
     }
 
