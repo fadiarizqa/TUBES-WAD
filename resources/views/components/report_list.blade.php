@@ -43,6 +43,9 @@
                         </span>
                     </td>
                     <td class="p-3">
+                        <a href="{{ route('reports.show', $report->id) }}" class="text-green-500 hover:text-green-700 mr-2">
+                                        Lihat
+                                    </a>
                         <form action="{{ route('reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?');">
                             @csrf
                             @method('DELETE')
