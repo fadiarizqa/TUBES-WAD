@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Reports;
 use App\Models\LostItem;
 use App\Models\FoundedItem;
-use App\Models\User;
-
+use Illuminate\Validation\Rule;
 
 class ReportsController extends Controller
 {
@@ -26,26 +25,28 @@ class ReportsController extends Controller
      */
     public function create(Request $request)
     {
-        $itemId = $request->query('item_id');
-    $type   = $request->query('type');
+    $request->validate([
+            'post_id'   => 'required|integer',
+            'post_type' => ['required', Rule::in(['lost', 'found'])],
+        ]);
 
-    if (!$type || !in_array($type, ['found', 'lost'])) {
-        abort(400, 'Tipe postingan tidak valid.');
-    }
+        $postId = $request->query('post_id');
+        $postType = $request->query('post_type');
+        $item = null;
+        $modelClass = null;
 
-    if ($type === 'found') {
-        $item = FoundedItem::find($itemId);
-        $postType = FoundedItem::class;
-    } else {
-        $item = LostItem::find($itemId);
-        $postType = LostItem::class;
-    }
+        if ($postType === 'lost') {
+            $item = LostItem::findOrFail($postId);
+            $modelClass = 'App\\Models\\LostItem';
+        } else {
+            $item = FoundedItem::findOrFail($postId);
+            $modelClass = 'App\\Models\\FoundedItem';
+        }
 
-    if (!$item) {
-        abort(404, 'Barang tidak ditemukan.');
-    }
-
-    return view('reports.create', compact('item', 'postType'));
+        return view('reports.create', [
+            'item' => $item,
+            'postType' => $modelClass, // Kirim nama kelas model yang lengkap
+        ]);
     }
 
     /**
@@ -53,36 +54,32 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        // ==========================================================
-        // PERBAIKAN UTAMA ADA DI SINI
-        // ==========================================================
-        $request->validate([
+        $validated = $request->validate([
             'post_id'   => 'required|integer',
-            // Kita escape backslash-nya dengan menambahkan satu backslash lagi
-            'post_type' => 'required|in:App\\\Models\\\LostItem,App\\\Models\\\FoundedItem',
+            'post_type' => 'required|in:App\Models\LostItem,App\Models\FoundedItem',
             'reason'    => 'required|string|max:500',
         ]);
-        // ==========================================================
 
-        $alreadyReported = Reports::where([
-            'user_id'   => Auth::id(),
-            'post_id'   => $request->post_id,
-            'post_type' => $request->post_type
-        ])->exists();
+        $alreadyReported = Reports::where('user_id', Auth::id())
+            ->where('post_id', $validated['post_id'])
+            ->where('post_type', $validated['post_type'])
+            ->exists();
 
         if ($alreadyReported) {
-            return back()->with('show_error_and_redirect', 'Anda sudah melaporkan postingan ini sebelumnya.');
+            // Kembali dengan pesan error untuk memicu popup
+            return back()->with('error', 'Anda sudah pernah melaporkan postingan ini sebelumnya.');
         }
 
         Reports::create([
             'user_id'   => Auth::id(),
-            'post_id'   => $request->post_id,
-            'post_type' => $request->post_type,
-            'reason'    => $request->reason,
+            'post_id'   => $validated['post_id'],
+            'post_type' => $validated['post_type'],
+            'reason'    => $validated['reason'],
             'status'    => 'pending'
         ]);
 
-        return back()->with('show_success_and_redirect', 'Laporan berhasil dikirim dan akan ditinjau oleh admin.');
+        // Kembali dengan pesan sukses untuk memicu popup
+        return back()->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau oleh admin.');
     }
 
     /**
@@ -90,7 +87,8 @@ class ReportsController extends Controller
      */
     public function show(string $id)
     {
-        
+        $report = Reports::with('post', 'user')->findOrFail($id);
+        return view('reports.show', compact('report'));
     }
 
     /**
@@ -107,7 +105,7 @@ class ReportsController extends Controller
             'status' => $request->status
         ]);
 
-        return back()->with('success', 'Status laporan diperbarui.');
+        return redirect()->route('reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
     }
 
     /**
