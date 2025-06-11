@@ -38,4 +38,5 @@ Route::middleware('auth')->group(function() {
     Route::get('/reports/{id}', [ReportsController::class, 'show'])->name('reports.show');
     Route::put('/reports/{id}', [ReportsController::class, 'update'])->name('reports.update');
     Route::delete('/reports/{id}', [ReportsController::class, 'destroy'])->name('reports.destroy');
+    Route::delete('/reports/post/{report}', [ReportsController::class, 'destroyPost'])->name('reports.destroyPost');
 });

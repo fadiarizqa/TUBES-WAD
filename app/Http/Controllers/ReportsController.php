@@ -118,4 +118,27 @@ class ReportsController extends Controller
 
         return back()->with('success', 'Laporan berhasil dihapus.');
     }
+
+    public function destroyPost(Reports $report)
+    {
+        // Pastikan hanya laporan yang sudah direview yang bisa ditindaklanjuti
+        if ($report->status !== 'reviewed') {
+            return back()->with('error', 'Hanya postingan dari laporan yang sudah direview yang bisa dihapus.');
+        }
+
+        $post = $report->post; // Mengambil model post (LostItem atau FoundedItem) melalui relasi polimorfik
+
+        if ($post) {
+            // Hapus postingan
+            $post->delete();
+            
+            // Setelah postingan dihapus, kita bisa menghapus laporannya juga agar bersih
+            $report->delete();
+
+            return redirect()->route('reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
+        }
+
+        // Jika karena satu dan lain hal postingan tidak ditemukan
+        return redirect()->route('reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
+    }
 }
