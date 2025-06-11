@@ -99,7 +99,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        <button type="submit" class="px-5 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
                             Post Comment
                         </button>
                     </div>
@@ -121,14 +121,14 @@
 
                         <div class="comment-actions mt-3 flex space-x-2"> {{-- Tambah margin-top dan space-x --}}
                             @can('update', $comment)
-                                <button type="button" class="bg-blue-500 text-white px-3 py-1 rounded-md hover:bg-blue-600 transition edit-comment-btn" data-comment-id="{{ $comment->id }}">Edit</button>
+                                <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition" data-comment-id="{{ $comment->id }}">Edit</button>
                             @endcan
 
                             @can('delete', $comment)
                                 <form action="{{ route('comments.destroy', ['id' => $item->id, 'comment' => $comment->id]) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition">Hapus</button>
+                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition">Hapus</button>
                                 </form>
                             @endcan
                         </div>
