@@ -8,7 +8,7 @@ class ClaimResponseController extends Controller
 {
     public function index()
     {
-        $claims = ClaimUser::with('response')->get(); // ambil semua klaim beserta responsenya
+        $claims = ClaimResponse::with('response')->get(); // ambil semua klaim beserta responsenya
         return view('claim_items.response', compact('claims'));
     }
 

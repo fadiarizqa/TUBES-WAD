@@ -12,7 +12,6 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\LostItemController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ReportsController;
 
 
 Route::middleware('guest')->group(function() {
