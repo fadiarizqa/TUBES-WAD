@@ -92,7 +92,7 @@
             <div class="comment-form-content mt-4" id="commentFormContent" style="display: none;">
                 <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
                     @csrf
-                    <input type="hidden" name="post_type" value="found"> {{-- Pastikan ini 'found' atau 'lost' sesuai halaman --}}
+                    <input type="hidden" name="post_type" value="lost"> {{-- Pastikan ini 'found' atau 'lost' sesuai halaman --}}
                     <input type="hidden" name="post_id" value="{{ $item->id }}">
 
                     <div>

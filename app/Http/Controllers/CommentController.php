@@ -59,6 +59,7 @@ class CommentController extends Controller
         
         return view('founded_items.show', compact('item'));
         return $comment;
+
     }
 
     public function update(Request $request, $id, Comment $comment)
