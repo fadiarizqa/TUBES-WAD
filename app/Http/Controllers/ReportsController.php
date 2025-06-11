@@ -17,6 +17,7 @@ class ReportsController extends Controller
      */
     public function index()
     {
+        $reports = Reports::with(['post', 'user'])->latest()->get();
         return view('reports.index', compact('reports'));
     }
 
@@ -52,13 +53,17 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
+        // ==========================================================
+        // PERBAIKAN UTAMA ADA DI SINI
+        // ==========================================================
         $request->validate([
             'post_id'   => 'required|integer',
-            'post_type' => 'required|in:App\Models\LostItem,App\Models\FoundItem',
+            // Kita escape backslash-nya dengan menambahkan satu backslash lagi
+            'post_type' => 'required|in:App\\\Models\\\LostItem,App\\\Models\\\FoundedItem',
             'reason'    => 'required|string|max:500',
         ]);
+        // ==========================================================
 
-        // Cek apakah user sudah melaporkan postingan yang sama
         $alreadyReported = Reports::where([
             'user_id'   => Auth::id(),
             'post_id'   => $request->post_id,
@@ -66,7 +71,7 @@ class ReportsController extends Controller
         ])->exists();
 
         if ($alreadyReported) {
-            return back()->with('error', 'Kamu sudah melaporkan postingan ini sebelumnya.');
+            return back()->with('show_error_and_redirect', 'Anda sudah melaporkan postingan ini sebelumnya.');
         }
 
         Reports::create([
@@ -77,7 +82,7 @@ class ReportsController extends Controller
             'status'    => 'pending'
         ]);
 
-        return back()->with('success', 'Laporan berhasil dikirim dan akan ditinjau oleh admin.');
+        return back()->with('show_success_and_redirect', 'Laporan berhasil dikirim dan akan ditinjau oleh admin.');
     }
 
     /**

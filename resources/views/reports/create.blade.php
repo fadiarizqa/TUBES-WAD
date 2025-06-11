@@ -84,39 +84,7 @@
         </div>
         @section('scripts')
         <script>
-            document.getElementById('item_photo').addEventListener('change', function(e) {
             
-            const file = e.target.files[0];
-            const container = this.parentElement;
-            const textElement = container.querySelector('div:nth-child(2)');
-            
-            
-            if (file) {
-                textElement.innerHTML = `
-                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #10B981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #065F46; margin-bottom: 4px;">File terpilih: ${file.name}</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #047857;">Klik untuk mengubah file</span>
-                `;
-                container.style.borderColor = '#10B981';
-                container.style.backgroundColor = '#ECFDF5';
-
-                reader.readAsDataURL(file);
-            } else {
-                // Reset to initial state if no file is selected (e.g., user cancels selection)
-                textElement.innerHTML = `
-                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #6B7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 4px;">Klik untuk upload foto</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #6B7280; margin-bottom: 4px;">atau drag & drop file di sini</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 400; color: #9CA3AF;">PNG, JPG, GIF up to 5MB</span>
-                `;
-                container.style.borderColor = '#D1D5DB';
-                container.style.backgroundColor = '#F9FAFB';
-            }
-        });
         </script>
         @endsection
     </body>
