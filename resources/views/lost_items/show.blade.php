@@ -81,10 +81,41 @@
             </div>
             
         </div>
-        <div class="w-full max-w-6xl bg-white p-6 md:p-10 m-4 md:m-8 border border-gray-200 rounded-xl shadow-md"> {{-- Sesuaikan padding dan margin --}}
+        <div class="w-full max-w-6xl bg-white p-6 md:p-10 m-4 md:m-8 border border-gray-200 rounded-xl shadow-md">
+            <div class="comment-form-header flex justify-between items-center cursor-pointer p-4 bg-gray-50 rounded-lg" id="toggleCommentForm">
+                <h2 class="text-xl font-semibold text-gray-800">Tulis Komentar</h2>
+                <svg id="commentFormArrow" class="w-6 h-6 text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path> 
+                </svg>
+            </div>
+
+            <div class="comment-form-content mt-4" id="commentFormContent" style="display: none;">
+                <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <input type="hidden" name="post_type" value="found"> {{-- Pastikan ini 'found' atau 'lost' sesuai halaman --}}
+                    <input type="hidden" name="post_id" value="{{ $item->id }}">
+
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
+                        <input type="text" name="title" id="title" class="w-full border rounded p-2 mt-1" required>
+                    </div>
+
+                    <div>
+                        <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
+                        <textarea name="content" id="content" rows="4" class="w-full border rounded p-2 mt-1" required></textarea>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                            Post Comment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="w-full max-w-6xl bg-white p-6 md:p-10 border border-gray-200 rounded-xl shadow-md"> 
                 <h2 class="text-xl font-semibold mb-4">Komentar</h2>
 
-                {{-- Loop untuk Menampilkan Komentar --}}
                 @forelse ($comments as $comment)
                     {{-- Ini adalah div pembungkus untuk SATU KOMENTAR dan FORM EDITNYA --}}
                     <div class="comment-item" id="comment-container-{{ $comment->id }}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
@@ -139,31 +170,6 @@
                 @empty
                     <p class="text-gray-500">Belum ada komentar.</p>
                 @endforelse
-
-                {{-- Form Komentar Baru --}}
-                <h2 class="text-xl font-semibold mt-6 mb-2">Tulis Komentar</h2>
-
-                <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="post_type" value="lost"> 
-                    <input type="hidden" name="post_id" value="{{ $item->id }}">
-
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
-                        <input type="text" name="title" id="title" class="w-full border rounded p-2 mt-1" required>
-                    </div>
-
-                    <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
-                        <textarea name="content" id="content" rows="4" class="w-full border rounded p-2 mt-1" required></textarea>
-                    </div>
-
-                    <div>
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Post Comment
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
@@ -190,6 +196,24 @@
                     if (editFormDiv) editFormDiv.style.display = 'none';
                 });
             });
+
+            const toggleButton = document.getElementById('toggleCommentForm');
+            const commentFormContent = document.getElementById('commentFormContent');
+            const commentFormArrow = document.getElementById('commentFormArrow');
+
+            if (toggleButton && commentFormContent && commentFormArrow) {
+                toggleButton.addEventListener('click', function () {
+                    if (commentFormContent.style.display === 'none') {
+                        commentFormContent.style.display = 'block';
+                        commentFormArrow.classList.add('rotate-180'); 
+                    } else {
+                        commentFormContent.style.display = 'none';
+                        commentFormArrow.classList.remove('rotate-180'); 
+                    }
+                });
+            } else {
+                console.error('One or more elements for comment form toggle not found!');
+            }
 
             console.log('Total edit buttons found:', document.querySelectorAll('.edit-comment-btn').length);
             console.log('Total cancel buttons found:', document.querySelectorAll('.cancel-edit-btn').length);
