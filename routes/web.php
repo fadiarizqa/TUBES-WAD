@@ -69,7 +69,6 @@ Route::middleware('auth')->group(function() {
     Route::put('/reports/{id}', [ReportsController::class, 'update'])->name('reports.update');
     Route::delete('/reports/{id}', [ReportsController::class, 'destroy'])->name('reports.destroy');
     Route::delete('/reports/post/{report}', [ReportsController::class, 'destroyPost'])->name('reports.destroyPost');
-});
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
