@@ -18,43 +18,48 @@ class HomeController extends Controller
     {
         $search = $request->input('search');
 
-        // Ambil semua item yang hilang dan petakan ke objek standar
+        // Langkah 1: Ambil semua data BARANG HILANG.
+        // Fungsi `map` di bawah ini akan memformat setiap item satu per satu.
         $lostItems = LostItem::latest()->get()->map(function ($item) {
+            // Untuk setiap item yang hilang, kita secara eksplisit membuat objek baru
+            // dan mengatur 'type' menjadi 'lost'.
             return (object)[
-                'id' => $item->id,
-                'nama' => $item->lost_item_name,
-                'deskripsi' => $item->item_description,
-                'foto' => $item->item_photo,
-                'type' => 'lost',
-                'created_at' => $item->created_at, // Sertakan untuk pengurutan
+                'id'          => $item->id,
+                'nama'        => $item->lost_item_name,
+                'deskripsi'   => $item->item_description,
+                'foto'        => $item->item_photo,
+                'type'        => 'lost', // <-- Data type dipastikan 'lost'
+                'created_at'  => $item->created_at,
             ];
         });
 
-        // Ambil semua item yang ditemukan dan petakan ke objek standar
+        // Langkah 2: Ambil semua data BARANG DITEMUKAN.
         $foundedItems = FoundedItem::latest()->get()->map(function ($item) {
+            // Untuk setiap item yang ditemukan, kita membuat objek baru
+            // dan mengatur 'type' menjadi 'founded' agar bisa dibedakan.
             return (object)[
-                'id' => $item->id,
-                'nama' => $item->found_item_name,
-                'deskripsi' => $item->item_description,
-                'foto' => $item->item_photo,
-                'type' => 'found',
-                'created_at' => $item->created_at, // Sertakan untuk pengurutan
+                'id'          => $item->id,
+                'nama'        => $item->found_item_name,
+                'deskripsi'   => $item->item_description,
+                'foto'        => $item->item_photo,
+                'type'        => 'founded', // <-- Data type dipastikan 'founded'
+                'created_at'  => $item->created_at,
             ];
         });
 
-        // Gabungkan kedua koleksi dan urutkan berdasarkan tanggal terbaru
+        // Langkah 3: Gabungkan kedua jenis barang menjadi satu koleksi besar
+        // dan urutkan berdasarkan tanggal postingan terbaru.
         $items = $lostItems->merge($foundedItems)->sortByDesc('created_at');
 
-        // Jika ada pencarian, filter koleksi gabungan
+        // Langkah 4: Terapkan filter pencarian jika ada.
         if ($search) {
             $items = $items->filter(function ($item) use ($search) {
-                // Cari berdasarkan nama atau deskripsi barang
                 return stripos($item->nama, $search) !== false ||
                        stripos($item->deskripsi, $search) !== false;
             });
         }
 
-        // Kirim variabel 'items' yang sudah berisi data ke view
-        return view('admin/home', compact('items')); 
+        // Langkah 5: Kirim koleksi $items yang sudah lengkap dan benar ke view.
+        return view('admin.home', compact('items'));
     }
 }

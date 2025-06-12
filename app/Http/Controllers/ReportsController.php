@@ -78,8 +78,12 @@ class ReportsController extends Controller
             'status'    => 'pending'
         ]);
 
-        // Kembali dengan pesan sukses untuk memicu popup
-        return back()->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau oleh admin.');
+        // 5. Logika pengalihan setelah berhasil
+        if ($request->input('from_admin') == '1') {
+            return redirect()->route('admin.reports.index')->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau.');
+        }
+        
+        return redirect()->route('home')->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau.');
     }
 
     /**

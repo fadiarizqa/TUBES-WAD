@@ -22,19 +22,28 @@
     </head>
 
    <body class="bg-gray-100 min-h-screen relative">
-
-    {{-- Tombol Kembali --}}
     <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+        @auth
+        @if (Auth::user()->role === 'admin' && Str::startsWith(url()->previous(), url('/admin')))
+            {{-- Jika admin datang dari halaman admin, tombol ini akan muncul --}}
+            <a href="{{ url()->previous() }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+                Kembali ke Panel Admin
+            </a>
+        @else
+            {{-- Jika pengguna biasa, tombol kembali ke home akan muncul --}}
+            <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
-        </a>
+            </a>
+
+        @endif
+    @endauth
 
         {{-- Tombol Report --}}
-        <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'lost']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
-        Laporkan Postingan Ini
-        </a>
+            <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
+            Laporkan Postingan Ini
+            </a>
     </div>
-
+    
     {{-- Wrapper --}}
     <div class="flex items-center justify-center flex-col ">
         <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
