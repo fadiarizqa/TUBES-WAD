@@ -43,11 +43,11 @@
                         </span>
                     </td>
                     <td class="p-3">
-                        <a href="{{ route('reports.show', $report->id) }}" class="text-green-500 hover:text-green-700 mr-2">
+                        <a href="{{ route('admin.reports.show', $report->id) }}" class="text-green-500 hover:text-green-700 mr-2">
                             Lihat
                         </a>
                         @if ($report->status == 'reviewed' && $report->post)
-                                        <form action="{{ route('reports.destroyPost', $report) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini secara permanen? Tindakan ini tidak dapat dibatalkan.');">
+                                        <form action="{{ route('admin.reports.destroyPost', $report) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini secara permanen? Tindakan ini tidak dapat dibatalkan.');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">

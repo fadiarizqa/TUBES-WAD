@@ -105,7 +105,7 @@ class ReportsController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
+        return redirect()->route('admin.reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
     }
 
     /**
@@ -135,10 +135,10 @@ class ReportsController extends Controller
             // Setelah postingan dihapus, kita bisa menghapus laporannya juga agar bersih
             $report->delete();
 
-            return redirect()->route('reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
+            return redirect()->route('admin.reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
         }
 
         // Jika karena satu dan lain hal postingan tidak ditemukan
-        return redirect()->route('reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
+        return redirect()->route('admin.reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
     }
 }

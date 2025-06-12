@@ -17,7 +17,7 @@
 <body class="bg-gray-100 text-gray-800 min-h-screen">
     <div class="lg:p-20 p-6 flex flex-col-reverse lg:flex-row gap-4 lg:gap-0 lg:max-w-4xl mx-auto">
 
-        <a href="{{ route('reports.index') }}" class="absolute top-6 left-6 inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-200 border border-gray-200 rounded-full transition-colors">
+        <a href="{{ route('admin.reports.index') }}" class="absolute top-6 left-6 inline-flex items-center justify-center w-10 h-10 bg-white hover:bg-gray-200 border border-gray-200 rounded-full transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
         </a>
         
@@ -66,7 +66,7 @@
 
             <hr class="border-t border-gray-200 my-6">
 
-            <form action="{{ route('reports.update', $report->id) }}" method="POST">
+            <form action="{{ route('admin.reports.update', $report->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <label for="status" class="block text-base font-semibold text-gray-900 mb-2">Ubah Status Laporan</label>

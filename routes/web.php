@@ -64,12 +64,7 @@ Route::middleware('auth')->group(function() {
     // Report
     Route::get('/reports/create', [ReportsController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportsController::class, 'store'])->name('reports.store');
-    Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
-    Route::get('/reports/{id}', [ReportsController::class, 'show'])->name('reports.show');
-    Route::put('/reports/{id}', [ReportsController::class, 'update'])->name('reports.update');
-    Route::delete('/reports/{id}', [ReportsController::class, 'destroy'])->name('reports.destroy');
-    Route::delete('/reports/post/{report}', [ReportsController::class, 'destroyPost'])->name('reports.destroyPost');
-
+    
     // Profile
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -85,6 +80,13 @@ Route::middleware('auth')->group(function() {
         Route::get('/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
         Route::get('/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
         Route::put('/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
+
+        // Reports untuk Admin Only
+        Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');
+        Route::get('/reports/{id}', [ReportsController::class, 'show'])->name('reports.show');
+        Route::put('/reports/{id}', [ReportsController::class, 'update'])->name('reports.update');
+        Route::delete('/reports/{id}', [ReportsController::class, 'destroy'])->name('reports.destroy');
+        Route::delete('/reports/post/{report}', [ReportsController::class, 'destroyPost'])->name('reports.destroyPost');
 
     });
     // === PENGATURAN UNTUK ADMIN SELESAI ===

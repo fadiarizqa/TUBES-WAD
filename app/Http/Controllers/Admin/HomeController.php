@@ -55,6 +55,6 @@ class HomeController extends Controller
         }
 
         // Kirim variabel 'items' yang sudah berisi data ke view
-        return view('admin.home', compact('items')); 
+        return view('admin/home', compact('items')); 
     }
 }
