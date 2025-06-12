@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('lost_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('posting_type'); 
             $table->string('full_name');
             $table->string('lost_item_name'); 
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->string('phone_number')->nullable();
             $table->string('social_media')->nullable();
             $table->string('item_photo')->nullable();
-            $table->enum('status', ['diklaim', 'none'])->default('none'); 
+            $table->enum('status', ['hilang', 'diklaim', 'none'])->default('hilang'); 
             $table->string('lost_location'); 
             $table->date('lost_date');    
             $table->timestamps();

@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('claim_responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('post_type', ['lost', 'found']);
-            $table->integer('post_id');
-            $table->text('title');
-            $table->text('content');
+            $table->foreignId('claim_user_id')->constrained('claim_users')->onDelete('cascade'); // relasi ke user claim
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('message')->nullable(); // pesan dari admin
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('claim_responses');
     }
 };
