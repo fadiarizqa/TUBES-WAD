@@ -14,7 +14,6 @@ use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 
-
 Route::middleware('guest')->group(function() {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
