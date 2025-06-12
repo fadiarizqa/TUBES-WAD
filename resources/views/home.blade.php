@@ -44,31 +44,6 @@
                             </button>
                         </form>
                     </div>
-                    <div class="mb-6 border-b border-gray-200">
-                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="filter-tabs" role="tablist">
-                            <li class="me-2" role="presentation">
-                                <a href="{{ route('home', ['filter' => 'all']) }}"
-                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
-                                aria-selected="{{ $filter == 'all' ? 'true' : 'false' }}">
-                                    Semua
-                                </a>
-                            </li>
-                            <li class="me-2" role="presentation">
-                                <a href="{{ route('home', ['filter' => 'found']) }}"
-                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'found' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
-                                aria-selected="{{ $filter == 'found' ? 'true' : 'false' }}">
-                                    Barang Ditemukan
-                                </a>
-                            </li>
-                            <li class="me-2" role="presentation">
-                                <a href="{{ route('home', ['filter' => 'lost']) }}"
-                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'lost' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
-                                aria-selected="{{ $filter == 'lost' ? 'true' : 'false' }}">
-                                    Barang Hilang
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
                     @forelse ($items as $item)
                         <x-card 

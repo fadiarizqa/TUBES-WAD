@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\LostItem;
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;

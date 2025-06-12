@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\ClaimUser; 
-use App\Models\ClaimResponse; 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ClaimResponseController extends Controller
