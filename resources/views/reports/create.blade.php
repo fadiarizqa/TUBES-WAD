@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,8 +26,7 @@
                 <div class="header flex justify-between">
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Laporkan Postingan</h1>
                     <div class="profile flex gap-5 items-center">
-                        <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ Auth::user()->foto_profil_url }}" alt="Foto Profil" class="w-10 h-10 rounded-full object-cover border">
+                        <x-profile class="w-10 h-10" />
                     </div>
                 </div>
                 {{-- Wrapper Konten --}}

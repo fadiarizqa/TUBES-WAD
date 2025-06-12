@@ -26,42 +26,62 @@
             <div class="main-content w-full p-4 ml-[300px]">
                 <div class="header flex justify-between items-center">
                     <h1 class="flex items-center">Selamat datang!</h1>
-                    <div class="relative flex items-center gap-3" x-data="{ open: false }">
-                        <p>{{ Auth::user()->name }}</p>
-                        <button @click="open = !open" class="flex items-center gap-1 focus:outline-none">
-                            <img src="{{ Auth::user()->foto_profil_url }}" alt="Foto Profil" class="w-10 h-10 rounded-full object-cover border">
-                            <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-
-
-                        <div
-                            x-show="open"
-                            @click.away="open = false"
-                            x-transition
-                            class="absolute top-full right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
-                        >
-                            <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit Foto Profil</a>
-                        </div>
-                    </div>
+                    <x-profile />
                 </div>
 
                 <div class="content">
-                    <div class="relative w-full border-2 border-gray-200 rounded-2xl p-2 mt-4">
-                        <input class="form-control mr-sm-2 w-full" type="search" name="search" placeholder="Search" aria-label="Search">
-                    </div>
+                    <div class="mb-6">
+                        <form action="{{ route('home') }}" method="GET" class="flex items-center">
+                            {{-- Hidden input untuk mempertahankan filter yang sedang aktif saat melakukan pencarian --}}
+                            <input type="hidden" name="filter" value="{{ $filter }}">
 
+                            <input type="text" name="search" placeholder="Cari barang berdasarkan nama atau deskripsi..."
+                                class="flex-1 p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ request('search') }}"> {{-- Pre-fill search input dengan query saat ini --}}
+
+                            <button type="submit" class="bg-blue-600 text-white p-3 rounded-r-lg hover:bg-blue-700 transition duration-200">
+                                Cari
+                            </button>
+                        </form>
+                    </div>
+                    <div class="mb-6 border-b border-gray-200">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="filter-tabs" role="tablist">
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('home', ['filter' => 'all']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'all' ? 'true' : 'false' }}">
+                                    Semua
+                                </a>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('home', ['filter' => 'found']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'found' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'found' ? 'true' : 'false' }}">
+                                    Barang Ditemukan
+                                </a>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('home', ['filter' => 'lost']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'lost' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'lost' ? 'true' : 'false' }}">
+                                    Barang Hilang
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
-                        @foreach ($items as $item)
-                            <x-card 
-                                :nama="$item->nama"
-                                :deskripsi="$item->deskripsi"
-                                :foto="$item->foto"
-                                :id="$item->id"
-                                :type="$item->type"
-                            />
-                        @endforeach
+                    @forelse ($items as $item)
+                        <x-card 
+                            :nama="$item->nama"
+                            :deskripsi="$item->deskripsi"
+                            :foto="$item->foto"
+                            :id="$item->id"
+                            :type="$item->type"
+                        />
+                    @empty
+                        {{-- Ini akan ditampilkan jika koleksi $items kosong --}}
+                        <p class="text-center text-gray-500 text-lg col-span-full">Tidak ditemukan datanya.</p>
+                    @endforelse
                     </div>
                 </div>
             </div>

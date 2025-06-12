@@ -10,9 +10,9 @@
     <div class="sidebar fixed bg-white">
         <h2 class="flex justify-center text-xl font-bold mb-4 mt-2">Carikeun</h2>
         <ul class="flex flex-col gap-5">
-            <li><a href="{{ route('admin.home') }}" class="sidebar-item">Beranda</a></li>
-            <li><a href="{{ route('admin.reports.index') }}" class="sidebar-item">Report Postingan</a></li>
-            <li><a href="{{ route('admin.claim_items.response.index') }}" class="sidebar-item">Pengajuan Claim</a></li>
+            <li><a href="{{ url('/admin/home') }}" class="sidebar-item">Beranda</a></li>
+            <li><a href="{{ url('/admin/reports') }}" class="sidebar-item">Report Postingan</a></li>
+            <li><a href="{{ url('/admin/claims') }}" class="sidebar-item">Pengajuan Claim</a></li>
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
