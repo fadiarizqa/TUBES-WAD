@@ -130,7 +130,6 @@
                     {{-- Ini adalah div pembungkus untuk SATU KOMENTAR dan FORM EDITNYA --}}
                     <div class="comment-item" id="comment-container-{{ $comment->id }}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
                         
-
                         {{-- Bagian untuk MENAMPILKAN komentar (awalnya terlihat) --}}
                         <div class="comment-display" id="comment-display-{{ $comment->id }}">
                             <h3 class="font-bold text-lg mb-1">{{ $comment->title }}</h3> {{-- Tambah margin-bottom --}}
@@ -141,9 +140,8 @@
 
                             <div class="comment-actions mt-3 flex space-x-2"> {{-- Tambah margin-top dan space-x --}}
                                 @can('update', $comment)
+                                    <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition" data-comment-id="{{ $comment->id }}">Edit</button>
                                     <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition edit-comment-btn" data-comment-id="{{ $comment->id }}">Edit</button>
-
-                
                                 @endcan
 
                                 @can('delete', $comment)
@@ -194,7 +192,7 @@
             document.querySelectorAll('.edit-comment-btn').forEach(button => {
                 button.addEventListener('click', function (event) {
                     const commentId = this.dataset.commentId;
-                    console.log('Edit button clicked for comment ID:', commentId); // Debugging
+                    console.log('Edit button clicked for comment ID:', commentId); 
                     const displayDiv = document.getElementById(`comment-display-${commentId}`);
                     if (displayDiv) displayDiv.style.display = 'none';
                     const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
@@ -205,7 +203,7 @@
             document.querySelectorAll('.cancel-edit-btn').forEach(button => {
                 button.addEventListener('click', function (event) {
                     const commentId = this.dataset.commentId;
-                    console.log('Cancel button clicked for comment ID:', commentId); // Debugging
+                    console.log('Cancel button clicked for comment ID:', commentId); 
                     const displayDiv = document.getElementById(`comment-display-${commentId}`);
                     if (displayDiv) displayDiv.style.display = 'block';
                     const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
