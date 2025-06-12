@@ -24,24 +24,23 @@
    <body class="bg-gray-100 min-h-screen relative">
     <div class="mt-6 text-center">
         @auth
-        @if (Auth::user()->role === 'admin' && Str::startsWith(url()->previous(), url('/admin')))
-            {{-- Jika admin datang dari halaman admin, tombol ini akan muncul --}}
-            <a href="{{ url()->previous() }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-                Kembali ke Panel Admin
-            </a>
-        @else
-            {{-- Jika pengguna biasa, tombol kembali ke home akan muncul --}}
-            <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-            ← Kembali ke Daftar Barang
-            </a>
+            @if (Auth::user()->role === 'admin' && Str::startsWith(url()->previous(), url('/admin')))
+                {{-- Jika admin datang dari halaman admin, tombol ini akan muncul --}}
+                <a href="{{ url()->previous() }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+                    Kembali ke Panel Admin
+                </a>
+            @else
+                {{-- Jika pengguna biasa, tombol kembali ke home akan muncul --}}
+                <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
+                ← Kembali ke Daftar Barang
+                </a>
 
-        @endif
-    @endauth
-
-        {{-- Tombol Report --}}
-            <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
-            Laporkan Postingan Ini
-            </a>
+                {{-- Tombol Report --}}
+                <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition">
+                Laporkan Postingan Ini
+                </a>
+                @endif
+        @endauth
     </div>
     
     {{-- Wrapper --}}
