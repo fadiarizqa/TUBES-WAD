@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;
 use App\Models\LostItem;
@@ -52,6 +53,13 @@ class FoundedItemController extends Controller
         ]);
 
         return redirect()->route('home')->with('success', 'Barang ditemukan berhasil diposting!');
+
+        return response()->json([
+            'message' => 'Berhasil post cihuy.',
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+        ], 201);
     }
 
     public function index()
