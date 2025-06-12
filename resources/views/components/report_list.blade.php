@@ -32,7 +32,13 @@
                         <span class="text-gray-500 text-xs">{{ $report->created_at->format('h.i A') }}</span>
                     </td>
                     <td class="p-3">{{ $report->reason }}</td>
-                    <td class="p-3">{{ Str::contains($report->post_type, 'FoundItem') ? 'Barang Ditemukan' : 'Barang Hilang' }}</td>
+                    <td class="p-3">
+                        @if ($report->post_type == \App\Models\FoundedItem::class)
+                            Barang Ditemukan
+                        @elseif ($report->post_type == \App\Models\LostItem::class)
+                            Barang Hilang
+                        @endif
+                    </td>
                     <td class="p-3">
                         <span class="px-3 py-1 rounded-full text-xs
                             @if($report->status == 'pending') bg-yellow-200 text-yellow-800
