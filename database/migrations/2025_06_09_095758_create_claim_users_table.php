@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('claim_users', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('nama_lengkap');
             $table->string('nomor_telepon');
             $table->string('media_sosial');

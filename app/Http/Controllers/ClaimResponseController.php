@@ -2,43 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClaimUser; 
+use App\Models\ClaimResponse; 
 use Illuminate\Http\Request;
 
 class ClaimResponseController extends Controller
 {
+    /**
+     * Menyimpan atau memperbarui response dari admin terhadap klaim.
+     */
+
     public function index()
     {
-        $claims = ClaimResponse::with('response')->get(); // ambil semua klaim beserta responsenya
+        $claims = ClaimUser::with('user', 'claimResponse', 'foundedItem')->get();
         return view('claim_items.response', compact('claims'));
     }
 
-    public function edit($id)
-    {
-        $claim = ClaimUser::with('response')->findOrFail($id);
-        return view('claim_items.edit_response', compact('claim'));
-    }
-
-    public function update(Request $request, $id)
+    public function storeOrUpdate(Request $request, $id)
     {
         $request->validate([
             'status' => 'required|in:pending,approved,rejected',
-            'message' => 'nullable|string',
         ]);
 
         $claim = ClaimUser::findOrFail($id);
 
-        $responseData = [
-            'status' => $request->status,
-            'message' => $request->message,
-        ];
+        ClaimResponse::updateOrCreate(
+            ['claim_user_id' => $claim->id],
+            ['status' => $request->status]
+        );
 
-        // Kalau sudah pernah diberi response, update
-        if ($claim->response) {
-            $claim->response->update($responseData);
-        } else {
-            $claim->response()->create($responseData);
+        return redirect()->route('admin.claim_items.index')->with('success', 'Status klaim diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $claim = ClaimUser::findOrFail($id);
+
+        if ($claim->claimResponse) {
+            $claim->claimResponse->delete();
+            return redirect()->route('admin.claim_items.index')->with('success', 'Respons klaim dihapus.');
         }
 
-        return redirect()->route('admin.claims.index')->with('success', 'Response berhasil disimpan!');
+        return redirect()->route('admin.claim_items.index')->with('error', 'Respons klaim tidak ditemukan.');
     }
 }

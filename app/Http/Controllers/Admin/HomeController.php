@@ -19,43 +19,39 @@ class HomeController extends Controller
         $search = $request->input('search');
 
         // Langkah 1: Ambil semua data BARANG HILANG.
-        // Fungsi `map` di bawah ini akan memformat setiap item satu per satu.
+        // Tambahkan atribut 'type' langsung ke objek model LostItem.
         $lostItems = LostItem::latest()->get()->map(function ($item) {
-            // Untuk setiap item yang hilang, kita secara eksplisit membuat objek baru
-            // dan mengatur 'type' menjadi 'lost'.
-            return (object)[
-                'id'          => $item->id,
-                'nama'        => $item->lost_item_name,
-                'deskripsi'   => $item->item_description,
-                'foto'        => $item->item_photo,
-                'type'        => 'lost', // <-- Data type dipastikan 'lost'
-                'created_at'  => $item->created_at,
-            ];
+            $item->type = 'lost'; // Tambahkan atribut baru ke objek model yang sudah ada
+            return $item;
         });
 
         // Langkah 2: Ambil semua data BARANG DITEMUKAN.
+        // Tambahkan atribut 'type' langsung ke objek model FoundedItem.
         $foundedItems = FoundedItem::latest()->get()->map(function ($item) {
-            // Untuk setiap item yang ditemukan, kita membuat objek baru
-            // dan mengatur 'type' menjadi 'founded' agar bisa dibedakan.
-            return (object)[
-                'id'          => $item->id,
-                'nama'        => $item->found_item_name,
-                'deskripsi'   => $item->item_description,
-                'foto'        => $item->item_photo,
-                'type'        => 'founded', // <-- Data type dipastikan 'founded'
-                'created_at'  => $item->created_at,
-            ];
+            $item->type = 'founded'; // Tambahkan atribut baru ke objek model yang sudah ada
+            return $item;
         });
 
         // Langkah 3: Gabungkan kedua jenis barang menjadi satu koleksi besar
-        // dan urutkan berdasarkan tanggal postingan terbaru.
+        // dan urutkan berdasarkan created_at.
+        // Pastikan kedua koleksi adalah koleksi Eloquent untuk merge yang mulus
         $items = $lostItems->merge($foundedItems)->sortByDesc('created_at');
 
         // Langkah 4: Terapkan filter pencarian jika ada.
         if ($search) {
             $items = $items->filter(function ($item) use ($search) {
-                return stripos($item->nama, $search) !== false ||
-                       stripos($item->deskripsi, $search) !== false;
+                // Pastikan properti nama yang diakses sesuai dengan model
+                // Untuk LostItem: $item->lost_item_name
+                // Untuk FoundedItem: $item->found_item_name
+                // Karena kita menggabungkan, kita perlu memeriksa keduanya atau
+                // membuat atribut "nama" di masing-masing map di atas.
+                // ATAU lebih baik, buat accessor di model jika sering dipakai.
+
+                // Untuk sementara, kita bisa cek properti mana yang ada
+                $itemName = property_exists($item, 'lost_item_name') ? $item->lost_item_name : $item->found_item_name;
+
+                return stripos($itemName, $search) !== false ||
+                       stripos($item->item_description, $search) !== false;
             });
         }
 

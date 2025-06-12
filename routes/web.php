@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function() {
     // Claims untuk User Only
     Route::get('/claims/create', [ClaimUserController::class, 'create'])->name('claim_user.create');
     Route::post('/claims', [ClaimUserController::class, 'store'])->name('claim_items.store');
+    Route::get('/claims/history', [ClaimUserController::class, 'history'])->name('claim_items.history');
 
     // Report
     Route::get('/reports/create', [ReportsController::class, 'create'])->name('reports.create');
@@ -76,9 +77,9 @@ Route::middleware('auth')->group(function() {
         Route::get('/home', [AdminHomeController::class, 'index'])->name('home');
         
         // Claims untuk Admin Only (URL-nya sekarang diawali dengan /admin)
-        Route::get('/claims', [ClaimResponseController::class, 'index'])->name('claim_items.response.index');
-        Route::get('/claims/{id}/edit', [ClaimResponseController::class, 'edit'])->name('claim_items.response.edit');
-        Route::put('/claims/{id}', [ClaimResponseController::class, 'update'])->name('claim_items.response.update');
+        Route::get('/claims', [ClaimResponseController::class, 'index'])->name('claim_items.index');
+        Route::put('/admin/claims/{id}/response', [ClaimResponseController::class, 'storeOrUpdate'])->name('claim_items.response');
+        Route::delete('/claim-users/{id}', [ClaimUserController::class, 'destroy'])->name('claim_user.destroy');
 
         // Reports untuk Admin Only
         Route::get('/reports', [ReportsController::class, 'index'])->name('reports.index');

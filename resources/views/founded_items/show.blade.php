@@ -91,6 +91,10 @@
                     </button>
                 </form>
                 @endcan
+                <a href="{{ route('claim_user.create', ['item_id' => $item->id]) }}" 
+                          class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
+                      Klaim Barang
+                  </a>
                 </div>
             </div>
 
