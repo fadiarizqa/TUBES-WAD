@@ -13,7 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api', // Prefix default tetap 'api'
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // =================================================================
+        // DAFTARKAN ALIAS MIDDLEWARE ANDA DI SINI
+        // Ini adalah pengganti dari Kernel.php di Laravel 11
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+        // =================================================================
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

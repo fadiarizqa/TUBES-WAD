@@ -12,6 +12,7 @@ class ClaimUser extends Model
     protected $table = 'claim_users'; // opsional kalau nama tabel sesuai konvensi
 
     protected $fillable = [
+        'user_id',
         'nama_lengkap',
         'nomor_telepon',
         'media_sosial',
@@ -25,8 +26,14 @@ class ClaimUser extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function response()
+    public function claimResponse()
     {
         return $this->hasOne(ClaimResponse::class);
     }
+
+    public function foundedItem()
+    {
+        return $this->belongsTo(FoundedItem::class);
+    }
+
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ClaimUser;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
+
 class ClaimUserController extends Controller
 {
     public function create()
@@ -30,14 +32,16 @@ class ClaimUserController extends Controller
         }
 
         ClaimUser::create([
+            'user_id' => auth()->id(),
             'nama_lengkap' => $validated['nama_lengkap'],
             'nomor_telepon' => $validated['nomor_telepon'],
             'media_sosial' => $validated['media_sosial'],
             'lokasi_kehilangan' => $validated['lokasi_kehilangan'],
             'waktu_kehilangan' => $validated['waktu_kehilangan'],
-            'deskripsi_claim' => 'required|string',
+            'deskripsi_claim' => $validated['deskripsi_claim'],
             'bukti_kepemilikan' => $itemPhotoPath
         ]);
+
 
         return redirect()->route('home')->with('success', 'Klaim barang berhasil diajukan!');
     }
@@ -53,4 +57,24 @@ class ClaimUserController extends Controller
         $claim = ClaimUser::findOrFail($id);
         return view('claim_user.show', compact('claim'));
     }
+
+        public function history(Request $request)
+    {   
+        $user = Auth::user();
+    
+        $claims = ClaimUser::where('user_id', $user->id)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        return view('claim_user.history', compact('claims'));
+    }
+
+    public function destroy($id)
+    {
+        $claim = ClaimUser::findOrFail($id);
+        $claim->delete();
+
+        return redirect()->back()->with('success', 'Data berhasil dihapus.');
+    }
+
 }
