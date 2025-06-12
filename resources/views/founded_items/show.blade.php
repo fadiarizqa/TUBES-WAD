@@ -126,7 +126,7 @@
 
                         <div class="comment-actions mt-3 flex space-x-2"> {{-- Tambah margin-top dan space-x --}}
                             @can('update', $comment)
-                                <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition" data-comment-id="{{ $comment->id }}">Edit</button>
+                                <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition edit-comment-btn" data-comment-id="{{ $comment->id }}">Edit</button>
                             @endcan
 
                             @can('delete', $comment)
@@ -155,8 +155,8 @@
                             </div>
 
                             <div class="flex space-x-2">
-                                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition">Simpan</button>
-                                <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500 transition cancel-edit-btn" data-comment-id="{{ $comment->id }}">Batal</button>
+                                <button type="submit" class="bg-gray-800 text-white px-5 py-1 rounded-full hover:bg-gray-700 transition">Simpan</button>
+                                <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded-full hover:bg-gray-500 transition cancel-edit-btn" data-comment-id="{{ $comment->id }}">Batal</button>
                             </div>
                         </form>
                     </div>
