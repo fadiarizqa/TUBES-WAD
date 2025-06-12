@@ -31,8 +31,6 @@
 
     <div class="max-w-lg mx-auto mt-32 bg-white p-8 rounded-2xl shadow">
         <h2 class="text-2xl font-bold mb-6 text-center">Ubah Foto Profil</h2>
-
-        {{-- ✅ Alert --}}
         @if(session('success'))
             <div class="mb-4 px-4 py-3 text-green-700 bg-green-100 rounded-lg">
                 {{ session('success') }}

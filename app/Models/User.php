@@ -30,11 +30,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
     public function getFotoProfilUrlAttribute()
-{
-    if (!$this->foto_profil || !file_exists(public_path($this->foto_profil))) {
-        return asset('profile.png'); 
+    {
+        if (!$this->foto_profil || !file_exists(public_path($this->foto_profil))) {
+            return asset('profile.png'); 
+        }
+        return asset($this->foto_profil);
     }
-
-    return asset($this->foto_profil);
-}
 }
