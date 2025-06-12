@@ -27,6 +27,12 @@
         <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
             ← Kembali ke Daftar Barang
         </a>
+
+        {{-- Tombol Report --}}
+        <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition"">
+        Laporkan Postingan Ini
+        </a>
+
     </div>
 
     <div class="flex items-center justify-center flex-col">
