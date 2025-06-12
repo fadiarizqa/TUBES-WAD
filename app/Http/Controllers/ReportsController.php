@@ -26,17 +26,28 @@ class ReportsController extends Controller
      */
     public function create(Request $request)
     {
-   $postType = $request->get('post_type');
-        $postId = $request->get('post_id');
+        $request->validate([
+            'post_id'   => 'required|integer',
+            'post_type' => ['required', Rule::in(['lost', 'found'])],
+        ]);
 
-        $modelClass = new $postType;
-        $item = $modelClass::findOrFail($postId);
+        $postId = $request->query('post_id');
+        $postType = $request->query('post_type');
+        $item = null;
+        $modelClass = null;
+
+        if ($postType === 'lost') {
+            $item = LostItem::findOrFail($postId);
+            $modelClass = 'App\\Models\\LostItem';
+        } else {
+            $item = FoundedItem::findOrFail($postId);
+            $modelClass = 'App\\Models\\FoundedItem';
+        }
 
         return view('reports.create', [
             'item' => $item,
-            'post_id' => $postId,
-            'post_type' => $postType
-        ]);
+            'postType' => $modelClass, // Kirim nama kelas model yang lengkap
+        ]); 
     }
 
     /**
@@ -46,7 +57,7 @@ class ReportsController extends Controller
     {
         $validated = $request->validate([
             'post_id'   => 'required|integer',
-            'post_type' => 'required|string',
+            'post_type' => 'required|string|in:App\Models\LostItem,App\Models\FoundedItem',
             'reason'    => 'required|string|max:500',
         ]);
 
