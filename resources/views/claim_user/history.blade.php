@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,30 +21,70 @@
     </head>
     <body>
         <div class="flex">
-            <x-admin/>
+            <x-sidebar/>
             <div class="main-content w-full p-4 ml-[300px]">
                 <div class="header flex justify-between">
-                    <h1 class="flex items-center">Selamat datang!</h1>
+                    <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Riwayat Pengajuan Klaim</h1>
                     <div class="profile flex gap-5 items-center">
                         <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ asset('profile.png') }}" alt="Logo">
+                        <img src="{{ Auth::user()->foto_profil_url }}" alt="Foto Profil" class="w-10 h-10 rounded-full object-cover border">
                     </div>
                 </div>
-                
-                <div class="content">
-                    <div class="relative w-full border-2 border-gray-200 rounded-2xl p-2 mt-4">
-                        <input class="form-control mr-sm-2 w-full" type="search" name="search" placeholder="Search" aria-label="Search">
-                    </div>
-                    <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
-                        @foreach ($items as $item)
-                            <x-card 
-                                :nama="$item->nama"
-                                :deskripsi="$item->deskripsi"
-                                :foto="$item->foto"
-                                :id="$item->id"
-                                :type="$item->type"
-                            />
-                        @endforeach
+                <hr class="mt-4"/> 
+                <div class="content p-5">
+                    {{-- Table --}}
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white"> {{-- Tambahkan bg-white di sini juga untuk memastikan background div --}}
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-700"> {{-- Ubah dari text-gray-500 dark:text-gray-400 jadi text-gray-700 --}}
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50"> {{-- Hapus dark:bg-gray-700 dark:text-gray-400 --}}
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">No</th>
+                                    <th scope="col" class="px-6 py-3">Nama Lengkap</th>
+                                    <th scope="col" class="px-6 py-3">Nomor Lengkap</th>
+                                    <th scope="col" class="px-6 py-3">Bukti Kepemilikan</th>
+                                    <th scope="col" class="px-6 py-3">Lokasi Kehilangan</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                @forelse($claims as $index => $claim)
+                    <tr>
+                        <td class="px-6 py-3">{{ $index + 1 }}</td>
+                        <td class="px-6 py-3">{{ $claim->nama_lengkap }}</td>
+                        <td class="px-6 py-3">{{ $claim->nomor_telepon }}</td>
+                        <td class="px-6 py-3">
+                            @if ($claim->bukti_kepemilikan)
+                                <img src="{{ asset('storage/' . $claim->bukti_kepemilikan) }}" alt="Bukti" class="w-16 h-16 object-cover rounded border">
+                            @else
+                                <span class="text-gray-400 italic">Tidak ada</span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-3">{{ $claim->lokasi_kehilangan }}</td>
+                        <td class="px-6 py-3">
+                            @if ($claim->claimResponse)
+                                @php
+                                    $status = $claim->claimResponse->status;
+                                    $badgeClass = match($status) {
+                                        'approved' => 'bg-green-100 text-green-800',
+                                        'rejected' => 'bg-red-100 text-red-800',
+                                        'pending' => 'bg-yellow-100 text-yellow-800',
+                                        default => 'bg-gray-100 text-gray-800'
+                                    };
+                                @endphp
+                                <span class="px-2 py-1 rounded text-xs font-semibold {{ $badgeClass }}">
+                                    {{ ucfirst($status) }}
+                                </span>
+                            @else
+                                <span class="italic text-gray-400">Belum diproses</span>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6">Belum ada klaim.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

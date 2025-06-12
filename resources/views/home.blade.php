@@ -30,8 +30,19 @@
                 </div>
 
                 <div class="content">
-                    <div class="relative w-full border-2 border-gray-200 rounded-2xl p-2 mt-4">
-                        <input class="form-control mr-sm-2 w-full" type="search" name="search" placeholder="Search" aria-label="Search">
+                    <div class="mb-6">
+                        <form action="{{ route('home') }}" method="GET" class="flex items-center">
+                            {{-- Hidden input untuk mempertahankan filter yang sedang aktif saat melakukan pencarian --}}
+                            <input type="hidden" name="filter" value="{{ $filter }}">
+
+                            <input type="text" name="search" placeholder="Cari barang berdasarkan nama atau deskripsi..."
+                                class="flex-1 p-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{ request('search') }}"> {{-- Pre-fill search input dengan query saat ini --}}
+
+                            <button type="submit" class="bg-blue-600 text-white p-3 rounded-r-lg hover:bg-blue-700 transition duration-200">
+                                Cari
+                            </button>
+                        </form>
                     </div>
                     <div class="mb-6 border-b border-gray-200">
                         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="filter-tabs" role="tablist">
@@ -59,15 +70,18 @@
                         </ul>
                     </div>
                     <div class="card-list flex flex-wrap justify-center gap-10 mt-5">
-                        @foreach ($items as $item)
-                            <x-card 
-                                :nama="$item->nama"
-                                :deskripsi="$item->deskripsi"
-                                :foto="$item->foto"
-                                :id="$item->id"
-                                :type="$item->type"
-                            />
-                        @endforeach
+                    @forelse ($items as $item)
+                        <x-card 
+                            :nama="$item->nama"
+                            :deskripsi="$item->deskripsi"
+                            :foto="$item->foto"
+                            :id="$item->id"
+                            :type="$item->type"
+                        />
+                    @empty
+                        {{-- Ini akan ditampilkan jika koleksi $items kosong --}}
+                        <p class="text-center text-gray-500 text-lg col-span-full">Tidak ditemukan datanya.</p>
+                    @endforelse
                     </div>
                 </div>
             </div>

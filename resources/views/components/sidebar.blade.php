@@ -13,6 +13,7 @@
             <li><a href="{{ url('/home') }}" class="sidebar-item">Beranda</a></li>
             <li><a href="{{ url('/founded_items/create') }}" class="sidebar-item">Posting Barang</a></li>
             <li><a href="{{ url('/history') }}" class="sidebar-item">Riwayat Posting</a></li>
+            <li><a href="{{ url('/claims/history') }}" class="sidebar-item">Status Klaim</a></li>
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
