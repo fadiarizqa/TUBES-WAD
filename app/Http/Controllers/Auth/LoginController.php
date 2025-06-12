@@ -33,7 +33,22 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             Log::info('Login berhasil', ['email' => $credentials['email']]);
             $request->session()->regenerate();
+            
+            // === MULAI LOGIKA PENGALIHAN BERDASARKAN PERAN ===
+
+            // Dapatkan data pengguna yang sedang login
+            $user = Auth::user();
+
+            // Periksa peran pengguna
+            if ($user->role === 'admin') {
+                // Jika admin, arahkan ke route 'admin.home'
+                return redirect()->route('admin.home')->with('success', 'Selamat datang kembali, Admin!');
+            }
+
+            // Jika bukan admin (atau peran lainnya), arahkan ke 'home' biasa
             return redirect()->route('home')->with('success', 'Login berhasil!');
+            
+            // === AKHIR LOGIKA PENGALIHAN ===
         }
 
         Log::warning('Login gagal', ['email' => $credentials['email']]);

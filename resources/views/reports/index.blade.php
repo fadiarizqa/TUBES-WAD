@@ -21,7 +21,7 @@
     </head>
     <body>
         <div class="flex">
-            <x-sidebar/>
+            <x-admin/>
             <div class="main-content w-full p-4 ml-[300px]">
                 <div class="header flex justify-between">
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Report Postingan</h1>

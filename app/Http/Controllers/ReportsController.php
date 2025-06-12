@@ -25,27 +25,16 @@ class ReportsController extends Controller
      */
     public function create(Request $request)
     {
-    $request->validate([
-            'post_id'   => 'required|integer',
-            'post_type' => ['required', Rule::in(['lost', 'found'])],
-        ]);
+   $postType = $request->get('post_type');
+        $postId = $request->get('post_id');
 
-        $postId = $request->query('post_id');
-        $postType = $request->query('post_type');
-        $item = null;
-        $modelClass = null;
-
-        if ($postType === 'lost') {
-            $item = LostItem::findOrFail($postId);
-            $modelClass = 'App\\Models\\LostItem';
-        } else {
-            $item = FoundedItem::findOrFail($postId);
-            $modelClass = 'App\\Models\\FoundedItem';
-        }
+        $modelClass = new $postType;
+        $item = $modelClass::findOrFail($postId);
 
         return view('reports.create', [
             'item' => $item,
-            'postType' => $modelClass, // Kirim nama kelas model yang lengkap
+            'post_id' => $postId,
+            'post_type' => $postType
         ]);
     }
 
@@ -56,7 +45,7 @@ class ReportsController extends Controller
     {
         $validated = $request->validate([
             'post_id'   => 'required|integer',
-            'post_type' => 'required|in:App\Models\LostItem,App\Models\FoundedItem',
+            'post_type' => 'required|string',
             'reason'    => 'required|string|max:500',
         ]);
 
@@ -66,7 +55,6 @@ class ReportsController extends Controller
             ->exists();
 
         if ($alreadyReported) {
-            // Kembali dengan pesan error untuk memicu popup
             return back()->with('error', 'Anda sudah pernah melaporkan postingan ini sebelumnya.');
         }
 
@@ -78,7 +66,6 @@ class ReportsController extends Controller
             'status'    => 'pending'
         ]);
 
-        // Kembali dengan pesan sukses untuk memicu popup
         return back()->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau oleh admin.');
     }
 
@@ -105,7 +92,7 @@ class ReportsController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
+        return redirect()->route('admin.reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
     }
 
     /**
@@ -135,10 +122,10 @@ class ReportsController extends Controller
             // Setelah postingan dihapus, kita bisa menghapus laporannya juga agar bersih
             $report->delete();
 
-            return redirect()->route('reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
+            return redirect()->route('admin.reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
         }
 
         // Jika karena satu dan lain hal postingan tidak ditemukan
-        return redirect()->route('reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
+        return redirect()->route('admin.reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
     }
 }
