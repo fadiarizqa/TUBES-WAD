@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->enum('post_type', ['lost', 'found']);
             $table->integer('post_id');
+            $table->text('title');
             $table->text('content');
             $table->timestamps();
         });

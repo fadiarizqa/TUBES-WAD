@@ -6,6 +6,7 @@ use App\Models\LostItem;
 use App\Models\FoundedItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class LostItemController extends Controller
 {
@@ -29,7 +30,7 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:diklaim,none', 
+            'status' => 'nullable|in:hilang,diklaim,none', 
         ]);
 
         $itemPhotoPath = null;
@@ -64,14 +65,16 @@ class LostItemController extends Controller
     public function show($id)
     {
         
-        $item = LostItem::findOrFail($id);
-
-        
-        return view('lost_items.show', compact('item'));
+        $item = LostItem::findOrFail($id); 
+        $comments = $item->comments()->latest()->get(); 
+        return view('lost_items.show', compact('item', 'comments'));
     }
+
+    use AuthorizesRequests;
 
     public function edit($id) {
         $item = LostItem::findOrFail($id);
+        $this->authorize('update', $item);
         return view('lost_items.edit', compact('item'));
     }
 
@@ -90,23 +93,22 @@ class LostItemController extends Controller
             'item_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'lost_location' => 'required|string|max:255',
             'lost_date' => 'required|date',
-            'status' => 'nullable|in:ditemukan,diklaim,none'
+            'status' => 'nullable|in:hilang,diklaim,none'
         ]);
 
 
-    if ($request->hasFile('item_photo')) {
-       
-        if ($item->item_photo) {
-            \Storage::disk('public')->delete($item->item_photo);
+        if ($request->hasFile('item_photo')) {
+        
+            if ($item->item_photo) {
+                \Storage::disk('public')->delete($item->item_photo);
+            }
+
+            $validated['item_photo'] = $request->file('item_photo')->store('lost_items_photos', 'public');
         }
 
-        $validated['item_photo'] = $request->file('item_photo')->store('lost_items_photos', 'public');
+        $item->update($validated);
+        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
     }
-
-    $item->update($validated);
-
-    return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
-}
 
 
     public function destroy($id) {
@@ -121,7 +123,7 @@ class LostItemController extends Controller
     $item->delete();
 
     return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
-}
+    }
 
     
 }

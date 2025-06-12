@@ -4,12 +4,12 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Laporkan Postingan</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,98 +26,121 @@
                 <div class="header flex justify-between">
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Laporkan Postingan</h1>
                     <div class="profile flex gap-5 items-center">
-                        <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ asset('profile.png') }}" alt="Logo">
+                        <x-profile class="w-10 h-10" />
                     </div>
                 </div>
-                {{-- Wrapper --}}
-                <div class="min-h-screen flex items-center justify-center px-4 py-10">
-                    <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
+                {{-- Wrapper Konten --}}
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col md:flex-row gap-8">
+                
+                {{-- KIRI: Preview Postingan --}}
+                <div class="md:w-1/2 w-full">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Preview Postingan</h3>
+                    @if ($item && $item->item_photo)
+                        <img class="w-full h-[300px] object-cover rounded-lg border border-gray-200" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
+                    @else
+                        <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
+                            Tidak ada foto
+                        </div>
+                    @endif
+                    <div class="mt-4">
+                        <h2 class="text-2xl font-bold text-black">{{ $item->lost_item_name ?? $item->found_item_name }}</h2>
+                        <p class="text-gray-600 mt-2 text-sm">{{ Str::limit($item->item_description ?? '-', 150) }}</p>
+                    </div>
+                </div>
 
-                        {{-- KIRI: Preview Postingan --}}
-                        <div class="md:w-1/2 w-full">
-                            {{-- Gambar --}}
-                            @if ($item && $item->item_photo)
-                                <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
-                            @else
-                                <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                                    Tidak ada foto
-                                </div>
-                            @endif
-
-                            {{-- Nama & Deskripsi --}}
-                            <div class="mt-4">
-                                <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
-                                <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
-                            </div>
+                {{-- KANAN: Form Laporan --}}
+                <div class="md:w-1/2 w-full">
+                    <h3 class="text-lg font-bold text-gray-800 mb-3">Alasan Pelaporan</h3>
+                    <form action="{{ route('reports.store') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{ $item->id }}">
+                        <input type="hidden" name="post_type" value="{{ $postType }}">
+                        
+                        <div>
+                            <label for="reason" class="sr-only">Alasan Pelaporan</label>
+                            <textarea name="reason" id="reason" rows="8" required class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm" placeholder="Jelaskan mengapa Anda melaporkan postingan ini...">{{ old('reason') }}</textarea>
+                            @error('reason')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        {{-- KANAN: Form Laporan --}}
-                        <div class="md:w-1/2 w-full bg-white-50 rounded-lg p-6">
-                            <h3 class="text-lg font-semibold mb-4 text-gray-800">Formulir Laporan</h3>
-
-                            <form action="{{ route('reports.store') }}" method="POST" class="space-y-4">
-                                @csrf
-
-                                {{-- Hidden item_id --}}
-                                <input type="hidden" name="post_id" value="{{ $item->id }}">
-                                <input type="hidden" name="post_type" value="{{ $postType }}">
-
-                                {{-- Alasan Pelaporan --}}
-                                <div>
-                                    <label for="reason" class="block text-sm font-medium text-gray-700">Alasan Pelaporan</label>
-                                    <textarea name="reason" id="reason" rows="4" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">{{ old('reason') }}</textarea>
-                                    @error('reason')
-                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                            <!-- SUBMIT -->
-                            <button type="submit"
-                                    class="bg-red-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-red-700 transition">
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-red-600 text-white font-semibold px-6 py-2 rounded-md hover:bg-red-700 transition-colors shadow-sm">
                                 Kirim Laporan
                             </button>
-                        </form>
-                    </div>
-                </div>            
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-        @section('scripts')
-        <script>
-            document.getElementById('item_photo').addEventListener('change', function(e) {
-            
-            const file = e.target.files[0];
-            const container = this.parentElement;
-            const textElement = container.querySelector('div:nth-child(2)');
-            
-            
-            if (file) {
-                textElement.innerHTML = `
-                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #10B981;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #065F46; margin-bottom: 4px;">File terpilih: ${file.name}</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #047857;">Klik untuk mengubah file</span>
-                `;
-                container.style.borderColor = '#10B981';
-                container.style.backgroundColor = '#ECFDF5';
+    </div>
 
-                reader.readAsDataURL(file);
-            } else {
-                // Reset to initial state if no file is selected (e.g., user cancels selection)
-                textElement.innerHTML = `
-                    <svg style="width: 32px; height: 32px; margin: 0 auto 8px; color: #6B7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                    </svg>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 600; color: #374151; margin-bottom: 4px;">Klik untuk upload foto</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 400; color: #6B7280; margin-bottom: 4px;">atau drag & drop file di sini</span>
-                    <span style="display: block; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 400; color: #9CA3AF;">PNG, JPG, GIF up to 5MB</span>
-                `;
-                container.style.borderColor = '#D1D5DB';
-                container.style.backgroundColor = '#F9FAFB';
+    @php
+        $popupType = session('success') ? 'success' : (session('error') ? 'error' : '');
+        $popupMessage = session('success') ?? session('error');
+    @endphp
+
+    @if ($popupType && $popupMessage)
+        <div id="popup-modal"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0"
+             data-popup-type="{{ $popupType }}"
+             data-popup-message="{{ $popupMessage }}">
+            
+            <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-md mx-4 text-center transform transition-transform duration-300 scale-95">
+                <div id="popup-icon" class="mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4"></div>
+                <h3 id="popup-title" class="text-xl font-bold text-gray-900"></h3>
+                <p id="popup-message" class="text-sm text-gray-600 mt-2"></p>
+                <div class="mt-6">
+                    <button id="popup-ok" class="w-full px-4 py-2 rounded-md font-semibold text-white shadow-sm transition-colors">OK</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('popup-modal');
+            
+            // Script hanya berjalan jika elemen modal ada di halaman
+            if (modal) {
+                const modalContent = modal.querySelector('.transform');
+                const okButton = document.getElementById('popup-ok');
+                const title = document.getElementById('popup-title');
+                const messageElement = document.getElementById('popup-message');
+                const iconContainer = document.getElementById('popup-icon');
+
+                // Ambil data dari atribut data-*
+                const popupType = modal.dataset.popupType;
+                const popupMessage = modal.dataset.popupMessage;
+                const homeUrl = "{{ route('home') }}";
+
+                if (popupType === 'success') {
+                    title.textContent = 'Laporan Terkirim';
+                    iconContainer.innerHTML = `<svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+                    iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-green-100';
+                    okButton.className = 'w-full px-4 py-2 rounded-md font-semibold text-white shadow-sm transition-colors bg-green-600 hover:bg-green-700';
+                } else if (popupType === 'error') {
+                    title.textContent = 'Gagal Mengirim Laporan';
+                    iconContainer.innerHTML = `<svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>`;
+                    iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full mb-4 bg-red-100';
+                    okButton.className = 'w-full px-4 py-2 rounded-md font-semibold text-white shadow-sm transition-colors bg-red-600 hover:bg-red-700';
+                }
+
+                messageElement.textContent = popupMessage;
+                
+                // Tampilkan modal dengan animasi
+                modal.classList.remove('opacity-0');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95');
+                }, 10);
+
+                // Arahkan ke home ketika tombol OK ditekan
+                okButton.addEventListener('click', function() {
+                    window.location.href = homeUrl;
+                });
             }
         });
         </script>
-        @endsection
-    </body>
+
+</body>
 </html>

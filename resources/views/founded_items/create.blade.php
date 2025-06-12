@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,8 +26,7 @@
                 <div class="header flex justify-between">
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Posting Barang Ditemukan</h1>
                     <div class="profile flex gap-5 items-center">
-                        <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ asset('profile.png') }}" alt="Logo">
+                        <x-profile class="w-10 h-10" />
                     </div>
                 </div>
                 <hr class="mt-4"/> 
@@ -61,7 +60,7 @@
 
                             <div class="form-group">
                                 <label for="full_name" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Nama Lengkap</label>
-                                <input type="text" name="full_name" id="full_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('full_name') }}">
+                                <input type="text" name="full_name" id="full_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('full_name') }}" placeholder="Masukkan nama lengkap">
                                 @error('full_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -69,7 +68,7 @@
 
                             <div class="form-group">
                                 <label for="found_item_name" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Nama Barang Ditemukan</label>
-                                <input type="text" name="found_item_name" id="found_item_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_item_name') }}">
+                                <input type="text" name="found_item_name" id="found_item_name" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_item_name') }}" placeholder="Masukkan nama barang ditemukan">
                                 @error('found_item_name')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -94,7 +93,7 @@
 
                             <div class="form-group">
                                 <label for="item_description" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Deskripsi Barang</label>
-                                <textarea name="item_description" id="item_description" rows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 220px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.75rem; box-sizing: border-box; resize: vertical; overflow: auto;">{{ old('item_description') }}</textarea>
+                                <textarea name="item_description" id="item_description" placeholder= "Masukkan deskripsi barang"  srows="4" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 220px; border-radius: 8px; border: 1px solid #080F2B; color: #252525; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-style: normal; font-weight: 400; line-height: 120%; letter-spacing: -0.28px; padding: 0.75rem; box-sizing: border-box; resize: vertical; overflow: auto;">{{ old('item_description') }}</textarea>
                                 @error('item_description')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -102,7 +101,7 @@
 
                             <div class="form-group">
                                 <label for="found_location" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Lokasi Penemuan</label>
-                                <input type="text" name="found_location" id="found_location" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_location') }}">
+                                <input type="text" name="found_location" id="found_location" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_location') }}" placeholder="Masukkan lokasi penemuan">
                                 @error('found_location')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -110,7 +109,7 @@
                             
                             <div class="form-group">
                                 <label for="found_date" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Tanggal Penemuan</label>
-                                <input type="date" name="found_date" id="found_date" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_date') }}">
+                                <input type="date" name="found_date" id="found_date" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('found_date') }}" placeholder="Pilih tanggal penemuan">
                                 @error('found_date')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -120,7 +119,7 @@
                         <div class="flex flex-col gap-y-4 md:w-1/2">
                             <div class="form-group">
                                 <label for="phone_number" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">No Telepon</label>
-                                <input type="text" name="phone_number" id="phone_number" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('phone_number') }}">
+                                <input type="text" name="phone_number" id="phone_number" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('phone_number') }}" placeholder="Masukkan nomor telepon yang bisa dihubungi">
                                 @error('phone_number')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -128,7 +127,7 @@
 
                             <div class="form-group">
                                 <label for="social_media" style="color: #080F2B; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; line-height: 30px; letter-spacing: 0.06px; margin-bottom: 0.25rem; display: block;">Social Media</label>
-                                <input type="text" name="social_media" id="social_media" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('social_media') }}">
+                                <input type="text" name="social_media" id="social_media" class="block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" style="width: 100%; height: 41px; border-radius: 8px; border: 1px solid #080F2B; color: #000; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-style: normal; font-weight: 500; line-height: 120%; letter-spacing: -0.32px; padding: 0.75rem; box-sizing: border-box;" value="{{ old('social_media') }}" placeholder="Masukkan akun media sosial yang bisa dihubungi">
                                 @error('social_media')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror

@@ -4,14 +4,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Detail Barang Ditemukan</title>
+        <title>Laravel</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <!-- Styles / Scripts -->
-        
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
@@ -20,205 +19,21 @@
             </style>
         @endif
     </head>
-
-   <body class="bg-gray-100 min-h-screen relative">
-
-    <div class="mt-6 text-center">
-        <a href="{{ route('home') }}" class="fixed top-4 left-4 inline-block px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-            ← Kembali ke Daftar Barang
-        </a>
-
-        {{-- Tombol Report --}}
-        <a href="{{ route('reports.create', ['post_id' => $item->id, 'post_type' => 'found']) }}" class="fixed top-4 right-4 inline-block px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition"">
-        Laporkan Postingan Ini
-        </a>
-
-    </div>
-
-    <div class="flex items-center justify-center flex-col">
-        <div class="w-full max-w-6xl bg-white border border-gray-200 rounded-xl overflow-hidden shadow-md p-6 flex flex-col md:flex-row gap-8">
-
-            <div class="md:w-1/2 w-full">
-                @if ($item->item_photo)
-                    <img class="w-full h-[300px] object-cover rounded-lg" src="{{ asset('storage/' . $item->item_photo) }}" alt="Foto Barang">
-                @else
-                    <div class="w-full h-[300px] bg-gray-200 flex items-center justify-center text-gray-500 rounded-lg">
-                        Tidak ada foto
+    <body>
+        <div class="flex">
+            <x-sidebar/>
+            <div class="main-content w-full p-4 ml-[300px]">
+                <div class="header flex justify-between">
+                    <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Report Postingan</h1>
+                    <div class="profile flex gap-5 items-center">
+                        <x-profile class="w-10 h-10" />
                     </div>
-                @endif
-
-                <div class="mt-4">
-                    <h2 class="text-2xl font-bold text-black">{{ $item->found_item_name }}</h2>
-                    <p class="text-gray-600 mt-2">{{ $item->item_description ?? '-' }}</p>
+                </div>
+                <hr class="mt-4"/> 
+                <div class="content p-5">
+                    <x-report_list :reports="$reports"/>
                 </div>
             </div>
-
-            <div class="md:w-1/2 w-full bg-white-20">
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Detail Barang</h3>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li><span class="font-bold"></span> {{ $item->posting_type }}</li>
-                    <li><span class="font-semibold">Jenis Barang:</span> {{ $item->item_type }}</li>
-                    <li><span class="font-semibold">Nama Penemu:</span> {{ $item->full_name }}</li>
-                    <li><span class="font-semibold">Nomor Telepon:</span> {{ $item->phone_number ?? '-' }}</li>
-                    <li><span class="font-semibold">Media Sosial:</span> {{ $item->social_media ?? '-' }}</li>
-                    <li><span class="font-semibold">Lokasi Ditemukan:</span> {{ $item->found_location }}</li>
-                    <li><span class="font-semibold">Tanggal Ditemukan:</span> {{ \Carbon\Carbon::parse($item->found_date)->format('d M Y') }}</li>
-                    <li><span class="font-semibold">Status:</span> {{ $item->status }}</li>
-                </ul>
-                <div class="flex justify-end space-x-4 mt-4 mt-20">
-                @can('update', $item)
-                <a href="{{ route('founded_items.edit', $item->id) }}" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                    Edit Postingan
-                </a>
-                @endcan
-
-                @can('delete', $item)
-                <form action="{{ route('founded_items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus postingan ini?')" style="display: inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="px-5 py-2 border border-gray-800 text-gray-800 rounded-full hover:bg-gray-800 hover:text-white transition">
-                        Hapus Postingan
-                    </button>
-                </form>
-                @endcan
-                </div>
-            </div>
-
         </div>
-        <div class="w-full max-w-6xl bg-white p-6 md:p-10 m-4 md:m-8 border border-gray-200 rounded-xl shadow-md">
-            <div class="comment-form-header flex justify-between items-center cursor-pointer p-4 bg-gray-50 rounded-lg" id="toggleCommentForm">
-                <h2 class="text-xl font-semibold text-gray-800">Tulis Komentar</h2>
-                <svg id="commentFormArrow" class="w-6 h-6 text-gray-600 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path> 
-                </svg>
-            </div>
-
-            <div class="comment-form-content mt-4" id="commentFormContent" style="display: none;">
-                <form action="{{ route('comments.store', $item->id) }}" method="POST" class="space-y-4">
-                    @csrf
-                    <input type="hidden" name="post_type" value="found"> {{-- Pastikan ini 'found' atau 'lost' sesuai halaman --}}
-                    <input type="hidden" name="post_id" value="{{ $item->id }}">
-
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-700">Judul Komentar</label>
-                        <input type="text" name="title" id="title" class="w-full border rounded p-2 mt-1" required>
-                    </div>
-
-                    <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700">Isi Komentar</label>
-                        <textarea name="content" id="content" rows="4" class="w-full border rounded p-2 mt-1" required></textarea>
-                    </div>
-
-                    <div>
-                        <button type="submit" class="px-5 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition">
-                            Post Comment
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="w-full max-w-6xl bg-white md:p-10 border border-gray-200 rounded-xl shadow-md"> 
-            <h2 class="text-xl font-semibold mb-4">Komentar</h2>
-
-            @forelse ($comments as $comment)
-                <div class="comment-item" id="comment-container-{{ $comment->id }}" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 8px;">
-
-                    <div class="comment-display" id="comment-display-{{ $comment->id }}">
-                        <h3 class="font-bold text-lg mb-1">{{ $comment->title }}</h3> {{-- Tambah margin-bottom --}}
-                        <p class="text-gray-700 text-sm mb-2">{{ $comment->content }}</p> {{-- Tambah margin-bottom --}}
-                        <small class="text-gray-500 text-xs">
-                            Ditulis oleh {{ $comment->user->name ?? 'Pengguna' }} pada {{ \Carbon\Carbon::parse($comment->created_at)->format('d M Y, H:i') }}
-                        </small>
-
-                        <div class="comment-actions mt-3 flex space-x-2"> {{-- Tambah margin-top dan space-x --}}
-                            @can('update', $comment)
-                                <button type="button" class="px-5 py-1 bg-gray-800 text-white rounded-full hover:bg-gray-700 transition edit-comment-btn" data-comment-id="{{ $comment->id }}">Edit</button>
-                            @endcan
-
-                            @can('delete', $comment)
-                                <form action="{{ route('comments.destroy', ['id' => $item->id, 'comment' => $comment->id]) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus komentar ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition">Hapus</button>
-                                </form>
-                            @endcan
-                        </div>
-                    </div>
-
-                    <div class="comment-edit-form" id="comment-edit-form-{{ $comment->id }}" style="display: none;">
-                        <form action="{{ route('comments.update', ['id' => $item->id, 'comment' => $comment->id]) }}" method="POST">
-                            @csrf
-                            @method('PUT')
-
-                            <div class="mb-3">
-                                <label for="edit_title_{{ $comment->id }}" class="block text-sm font-medium text-gray-700">Judul Komentar:</label>
-                                <input type="text" id="edit_title_{{ $comment->id }}" name="title" value="{{ old('title', $comment->title) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="edit_content_{{ $comment->id }}" class="block text-sm font-medium text-gray-700">Isi Komentar:</label>
-                                <textarea id="edit_content_{{ $comment->id }}" name="content" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2" required>{{ old('content', $comment->content) }}</textarea>
-                            </div>
-
-                            <div class="flex space-x-2">
-                                <button type="submit" class="bg-gray-800 text-white px-5 py-1 rounded-full hover:bg-gray-700 transition">Simpan</button>
-                                <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded-full hover:bg-gray-500 transition cancel-edit-btn" data-comment-id="{{ $comment->id }}">Batal</button>
-                            </div>
-                        </form>
-                    </div>
-
-                </div> {{-- Akhir dari comment-item container --}}
-            @empty
-                <p class="text-gray-500">Belum ada komentar.</p>
-            @endforelse            
-        </div>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.edit-comment-btn').forEach(button => {
-                button.addEventListener('click', function (event) {
-                    const commentId = this.dataset.commentId;
-                    console.log('Edit button clicked for comment ID:', commentId); 
-                    const displayDiv = document.getElementById(`comment-display-${commentId}`);
-                    if (displayDiv) displayDiv.style.display = 'none';
-                    const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
-                    if (editFormDiv) editFormDiv.style.display = 'block';
-                });
-            });
-
-            document.querySelectorAll('.cancel-edit-btn').forEach(button => {
-                button.addEventListener('click', function (event) {
-                    const commentId = this.dataset.commentId;
-                    console.log('Cancel button clicked for comment ID:', commentId); 
-                    const displayDiv = document.getElementById(`comment-display-${commentId}`);
-                    if (displayDiv) displayDiv.style.display = 'block';
-                    const editFormDiv = document.getElementById(`comment-edit-form-${commentId}`);
-                    if (editFormDiv) editFormDiv.style.display = 'none';
-                });
-            });
-
-            const toggleButton = document.getElementById('toggleCommentForm');
-            const commentFormContent = document.getElementById('commentFormContent');
-            const commentFormArrow = document.getElementById('commentFormArrow');
-
-            if (toggleButton && commentFormContent && commentFormArrow) {
-                toggleButton.addEventListener('click', function () {
-                    if (commentFormContent.style.display === 'none') {
-                        commentFormContent.style.display = 'block';
-                        commentFormArrow.classList.add('rotate-180'); 
-                    } else {
-                        commentFormContent.style.display = 'none';
-                        commentFormArrow.classList.remove('rotate-180'); 
-                    }
-                });
-            } else {
-                console.error('One or more elements for comment form toggle not found!');
-            }
-
-            console.log('Total edit buttons found:', document.querySelectorAll('.edit-comment-btn').length);
-            console.log('Total cancel buttons found:', document.querySelectorAll('.cancel-edit-btn').length);
-        });
-    </script>
-</body>
-
+    </body>
 </html>

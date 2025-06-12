@@ -9,7 +9,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -26,13 +26,81 @@
                 <div class="header flex justify-between">
                     <h1 class="flex items-center text-[#080F2B] font-plus-jakarta-sans text-[20px] not-italic font-semibold leading-[30px] tracking-[0.06px] mb-1 block">Riwayat</h1>
                     <div class="profile flex gap-5 items-center">
-                        <p>{{ Auth::user()->name }}</p>
-                        <img src="{{ asset('profile.png') }}" alt="Logo">
+                        <x-profile class="w-10 h-10" />
                     </div>
                 </div>
                 <hr class="mt-4"/> 
                 <div class="content p-5">
-                    <x-card_list/>
+                    {{-- Filter Tabs --}}
+                    <div class="mb-6 border-b border-gray-200">
+                        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" role="tablist">
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('history.index', ['filter' => 'all']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'all' ? 'true' : 'false' }}">
+                                    Semua
+                                </a>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('history.index', ['filter' => 'found']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'found' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'found' ? 'true' : 'false' }}">
+                                    Barang ditemukan
+                                </a>
+                            </li>
+                            <li class="me-2" role="presentation">
+                                <a href="{{ route('history.index', ['filter' => 'lost']) }}"
+                                class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'lost' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                                aria-selected="{{ $filter == 'lost' ? 'true' : 'false' }}">
+                                    Barang hilang
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {{-- Table --}}
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg bg-white"> {{-- Tambahkan bg-white di sini juga untuk memastikan background div --}}
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-700"> {{-- Ubah dari text-gray-500 dark:text-gray-400 jadi text-gray-700 --}}
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50"> {{-- Hapus dark:bg-gray-700 dark:text-gray-400 --}}
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Judul</th>
+                                    <th scope="col" class="px-6 py-3">Tanggal</th>
+                                    <th scope="col" class="px-6 py-3">Deskripsi Barang</th>
+                                    <th scope="col" class="px-6 py-3">Jenis Laporan</th>
+                                    <th scope="col" class="px-6 py-3">Status</th>
+                                    <th scope="col" class="px-6 py-3">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($allPosts as $post)
+                                    <tr class="bg-white border-b hover:bg-gray-50"> {{-- Hapus dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 --}}
+                                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"> {{-- Hapus dark:text-white --}}
+                                            {{ $post->item_name ?? $post->found_item_name ?? $post->lost_item_name }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ \Carbon\Carbon::parse($post->created_at)->format('d M Y, H:i') }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ Str::limit($post->item_description, 50) }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $post->posting_type }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            {{ $post->status }}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <a href="{{ $post->posting_type === 'Barang Ditemukan' ? route('founded_items.show', $post->id) : route('lost_items.show', $post->id) }}" class="font-medium text-blue-600 hover:underline">Lihat</a> {{-- Hapus dark:text-blue-500 --}}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr class="bg-white border-b"> {{-- Hapus dark:bg-gray-800 dark:border-gray-700 --}}
+                                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">Tidak ada riwayat postingan yang ditemukan.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
