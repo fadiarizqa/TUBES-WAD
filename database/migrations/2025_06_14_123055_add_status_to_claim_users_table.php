@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('claim_users', function (Blueprint $table) {
+            // Tambahkan kolom 'status' setelah 'bukti_kepemilikan'
+            $table->enum('status', ['pending', 'approved', 'rejected']) // Sesuaikan nilai enum jika perlu
+                  ->default('pending')
+                  ->after('bukti_kepemilikan');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('claim_users', function (Blueprint $table) {
+            // Drop kolom 'status' jika migrasi di-rollback
+            $table->dropColumn('status');
+        });
+    }
+};
