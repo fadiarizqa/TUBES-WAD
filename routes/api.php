@@ -18,9 +18,10 @@ use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function() {
 
-    // Lost Items
+    Route::get('/user', [AuthController::class, 'user']);
     Route::get('/lost_items', [LostItemApiController::class, 'index'])->name('lost_items.index');
     Route::get('/lost_items/create', [LostItemApiController::class, 'create'])->name('lost_items.create');
     Route::post('/lost_items', [LostItemApiController::class, 'store'])->name('lost_items.store');
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/founded_items/create', [FoundedItemApiController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemApiController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemApiController::class, 'show'])->name('founded_items.show');
+    Route::get('/founded_items/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
     Route::post('/founded_items/{id}/comments', [CommentApiController::class, 'store'])->name('comments.store');
     Route::get('/founded_items/{id}/comments/{comment}/edit', [CommentApiController::class, 'edit'])->name('comments.edit');
     Route::put('/founded_items/{id}/comments/{comment}', [CommentApiController::class, 'update'])->name('comments.update');
