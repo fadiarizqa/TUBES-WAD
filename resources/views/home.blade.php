@@ -28,7 +28,31 @@
                     <h1 class="flex items-center">Selamat datang!</h1>
                     <x-profile />
                 </div>
-
+                <div class="mb-6 border-b border-gray-200">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="filter-tabs" role="tablist">
+                        <li class="me-2" role="presentation">
+                            <a href="{{ route('home', ['filter' => 'all']) }}"
+                            class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'all' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                            aria-selected="{{ $filter == 'all' ? 'true' : 'false' }}">
+                                Semua
+                            </a>
+                        </li>
+                        <li class="me-2" role="presentation">
+                            <a href="{{ route('home', ['filter' => 'found']) }}"
+                            class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'found' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                            aria-selected="{{ $filter == 'found' ? 'true' : 'false' }}">
+                                Barang Ditemukan
+                            </a>
+                        </li>
+                        <li class="me-2" role="presentation">
+                            <a href="{{ route('home', ['filter' => 'lost']) }}"
+                            class="inline-block p-4 border-b-2 rounded-t-lg {{ $filter == 'lost' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300' }} transition duration-200"
+                            aria-selected="{{ $filter == 'lost' ? 'true' : 'false' }}">
+                                Barang Hilang
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="content">
                     <div class="mb-6">
                         <form action="{{ route('home') }}" method="GET" class="flex items-center">
