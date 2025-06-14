@@ -13,12 +13,29 @@ use Illuminate\Validation\Rule;
 class ReportsApiController extends ControllerApi
 {
     /**
-     * Display a listing of the resource.
+     * @route   GET /api/reports
+     * @desc    Menampilkan semua laporan
+     * @access  Private (Admin)
      */
     public function index()
     {
         $reports = Reports::with(['post', 'user'])->latest()->get();
-        return view('reports.index', compact('reports'));
+
+        // Cek jika tidak ada laporan sama sekali
+        if ($reports->isEmpty()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Belum ada laporan yang masuk saat ini.',
+                'data'    => [] // Tetap kirim array kosong
+            ]);
+        }
+
+        // Jika ada laporan, kirim seperti biasa
+        return response()->json([
+            'success' => true,
+            'message' => 'Data semua laporan berhasil diambil.',
+            'data'    => $reports
+        ]);
     }
 
     /**
@@ -56,10 +73,14 @@ class ReportsApiController extends ControllerApi
             ->exists();
 
         if ($alreadyReported) {
-            return back()->with('error', 'Anda sudah pernah melaporkan postingan ini sebelumnya.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah pernah melaporkan postingan ini sebelumnya.',
+                'data'    => null
+            ], 409);
         }
 
-        Reports::create([
+        $report = Reports::create([
             'user_id'   => Auth::id(),
             'post_id'   => $validated['post_id'],
             'post_type' => $validated['post_type'],
@@ -67,7 +88,11 @@ class ReportsApiController extends ControllerApi
             'status'    => 'pending'
         ]);
 
-        return back()->with('success', 'Laporan berhasil dikirim dan akan segera ditinjau oleh admin.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan berhasil dikirim dan akan segera ditinjau oleh admin.',
+            'data'    => $report
+        ], 201);
     }
 
     /**
@@ -75,8 +100,25 @@ class ReportsApiController extends ControllerApi
      */
     public function show(string $id)
     {
-        $report = Reports::with('post', 'user')->findOrFail($id);
-        return view('reports.show', compact('report'));
+        if (!Auth::guard('sanctum')->check()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        
+        $report = Reports::with('post', 'user')->find($id); 
+
+        if (!$report) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Laporan dengan ID ' . $id . ' tidak ditemukan.',
+                'data'    => null
+            ], 404);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail laporan berhasil diambil.',
+            'data'    => $report
+        ]);
     }
 
     /**
@@ -84,16 +126,29 @@ class ReportsApiController extends ControllerApi
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'required|in:pending,reviewed,rejected',
         ]);
 
-        $report = Reports::findOrFail($id);
+        $report = Reports::find($id);
+
+        if (!$report) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Laporan dengan ID ' . $id . ' tidak ditemukan.',
+                'data'    => null
+            ], 404);
+        }
+        
         $report->update([
-            'status' => $request->status
+            'status' => $validated['status']
         ]);
 
-        return redirect()->route('admin.reports.show', $report->id)->with('success', 'Status laporan berhasil diperbarui.');  
+        return response()->json([
+            'success' => true,
+            'message' => 'Status laporan berhasil diperbarui.',
+            'data'    => $report->fresh()
+        ]);  
     }
 
     /**
@@ -101,32 +156,62 @@ class ReportsApiController extends ControllerApi
      */
     public function destroy(string $id)
     {
-        $report = Reports::findOrFail($id);
+        $report = Reports::find($id);
+
+        if (!$report) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Laporan dengan ID ' . $id . ' tidak ditemukan.',
+                'data'    => null
+            ], 404);
+        }
+
+        // Periksa apakah status laporan adalah 'rejected'
+        if ($report->status !== 'rejected') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal! Laporan hanya dapat dihapus jika statusnya "Rejected".',
+                'data'    => null
+            ], 400); // 400 Bad Request
+        }
+        
+        // Jika statusnya 'rejected', hapus laporan
         $report->delete();
 
-        return back()->with('success', 'Laporan berhasil dihapus.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Laporan berhasil dihapus.',
+            'data'    => null
+        ]);
     }
 
     public function destroyPost(Reports $report)
     {
-        // Pastikan hanya laporan yang sudah direview yang bisa ditindaklanjuti
         if ($report->status !== 'reviewed') {
-            return back()->with('error', 'Hanya postingan dari laporan yang sudah direview yang bisa dihapus.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Hanya postingan dari laporan yang sudah direview yang bisa dihapus.',
+                'data'    => null
+            ], 403);
         }
 
-        $post = $report->post; // Mengambil model post (LostItem atau FoundedItem) melalui relasi polimorfik
+        $post = $report->post;
 
         if ($post) {
-            // Hapus postingan
             $post->delete();
-            
-            // Setelah postingan dihapus, kita bisa menghapus laporannya juga agar bersih
             $report->delete();
 
-            return redirect()->route('admin.reports.index')->with('success', 'Postingan terkait telah berhasil dihapus.');
+            return response()->json([
+                'success' => true,
+                'message' => 'Postingan terkait telah berhasil dihapus.',
+                'data'    => null
+            ]);
         }
 
-        // Jika karena satu dan lain hal postingan tidak ditemukan
-        return redirect()->route('admin.reports.index')->with('error', 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.');
+        return response()->json([
+            'success' => false,
+            'message' => 'Postingan tidak ditemukan atau sudah dihapus sebelumnya.',
+            'data'    => null
+        ], 404);
     }
 }
