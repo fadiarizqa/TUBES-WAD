@@ -5,14 +5,28 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\ControllerApi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class ProfileApiController extends ControllerApi
 {
-    public function edit()
+
+    public function show(Request $request)
     {
-        return view('profile.edit');
+        $user = $request->user();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data profil berhasil diambil.',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'foto_profil' => asset($user->foto_profil ?? 'uploads/profile.png'),
+                'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                'updated_at' => $user->updated_at->format('Y-m-d H:i:s'),
+            ]
+        ]);
     }
+
 
     public function update(Request $request)
     {
@@ -22,7 +36,8 @@ class ProfileApiController extends ControllerApi
 
         $user = Auth::user();
 
-        if ($user->foto_profil !== 'profile.png' && file_exists(public_path($user->foto_profil))) {
+
+        if ($user->foto_profil !== 'uploads/profile.png' && file_exists(public_path($user->foto_profil))) {
             unlink(public_path($user->foto_profil));
         }
 
@@ -34,19 +49,33 @@ class ProfileApiController extends ControllerApi
             'foto_profil' => 'uploads/' . $filename,
         ]);
 
-        return redirect()->route('profile.edit')->with('success', 'Foto berhasil diubah.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto profil berhasil diubah.',
+            'foto_profil' => asset('uploads/' . $filename),
+        ]);
     }
 
     public function destroy()
     {
         $user = Auth::user();
 
-        if ($user->foto_profil !== 'profile.png' && file_exists(public_path($user->foto_profil))) {
-            unlink(public_path($user->foto_profil));
+        $currentFoto = basename($user->foto_profil);
+
+        if ($currentFoto !== 'profile.png') {
+            $fotoPath = public_path($user->foto_profil);
+
+            if (file_exists($fotoPath)) {
+                unlink($fotoPath); 
+            }
+
+            $user->update(['foto_profil' => 'uploads/profile.png']);
         }
 
-        $user->update(['foto_profil' => 'profile.png']);
-
-        return redirect()->route('profile.edit')->with('success', 'Foto berhasil dihapus.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto profil berhasil dihapus dan dikembalikan ke default.',
+            'foto_profil' => asset('uploads/profile.png'), 
+        ]);
     }
 }
