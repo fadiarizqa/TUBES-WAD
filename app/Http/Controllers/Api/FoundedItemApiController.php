@@ -83,7 +83,12 @@ class FoundedItemApiController extends ControllerApi
     public function index()
     {
         $foundedItems = FoundedItem::latest()->get();
-        return view('founded_items.index', compact('foundedItems'));
+
+        return response()->json([
+        'success' => true,
+        'message' => 'Data barang ditemukan berhasil diambil',
+        'data' => $foundedItems
+    ], 200);
     }
 
     public function show($id) 
@@ -91,7 +96,12 @@ class FoundedItemApiController extends ControllerApi
         $item = FoundedItem::findOrFail($id); 
         $comments = $item->comments()->latest()->get(); 
         // dd($comments->toArray(), $item->toArray()); 
-        return view('founded_items.show', compact('item', 'comments'));
+        // return view('founded_items.show', compact('item', 'comments'));
+        return response()->json([
+        'success' => true,
+        'message' => 'Data barang ditemukan berhasil diambil',
+        'data' => $item
+    ], 200);
     }
 
     use AuthorizesRequests;
@@ -132,7 +142,29 @@ class FoundedItemApiController extends ControllerApi
 
         $item->update($validated);
 
-        return redirect()->route('home')->with('success', 'Postingan berhasil diperbarui.');
+        return response()->json([
+        'success' => true,
+        'message' => 'Data barang ditemukan berhasil diperbarui',
+        'data' => [
+            'id' => $item->id,
+            'user_id' => $item->user_id,
+            'posting_type' => $item->posting_type,
+            'full_name' => $item->full_name,
+            'found_item_name' => $item->found_item_name,
+            'item_type' => $item->item_type,
+            'item_description' => $item->item_description,
+            'phone_number' => $item->phone_number,
+            'social_media' => $item->social_media,
+            'item_photo_url' => $item->item_photo ? asset('storage/' . $item->item_photo) : null,
+            'found_location' => $item->found_location,
+            'found_date' => $item->found_date,
+            'status' => $item->status,
+            'created_at' => $item->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $item->updated_at->format('Y-m-d H:i:s'),
+        ]
+        ], 200);
+
+        
     }
 
 
@@ -147,6 +179,12 @@ class FoundedItemApiController extends ControllerApi
         // Hapus data dari database
         $item->delete();
 
-        return redirect()->route('home')->with('success', 'Postingan berhasil dihapus.');
+        return response()->json([
+        'success' => true,
+        'message' => 'Postingan berhasil dihapus.',
+        'data' => [
+            'id' => $id,
+        ]
+    ], 200);
     }
 }
