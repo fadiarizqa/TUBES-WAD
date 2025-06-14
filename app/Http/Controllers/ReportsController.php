@@ -113,18 +113,9 @@ class ReportsController extends Controller
     public function destroy(string $id)
     {
         $report = Reports::findOrFail($id);
+        $report->delete();
 
-        // Periksa apakah status laporan adalah 'rejected'
-        if ($report->status === 'rejected') {
-            // Jika ya, hapus laporan
-            $report->delete();
-
-            // Kembalikan ke halaman sebelumnya dengan pesan sukses
-            return redirect()->route('admin.reports.index')->with('success', 'Laporan berhasil dihapus.');
-        }
-
-        // Jika status bukan 'rejected', kembalikan dengan pesan error
-        return back()->with('error', 'Gagal! Laporan hanya dapat dihapus jika statusnya "Rejected".');
+        return back()->with('success', 'Laporan berhasil dihapus.');
     }
 
     public function destroyPost(Reports $report)

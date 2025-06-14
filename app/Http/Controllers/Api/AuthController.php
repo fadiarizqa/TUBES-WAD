@@ -10,27 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function user(Request $request)
-    {
-        // $request->user() akan mengembalikan objek User yang sedang login
-        // karena rute ini dilindungi oleh middleware 'auth:sanctum'.
-        $user = $request->user();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Detail user berhasil diambil.',
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                // Anda bisa menambahkan properti lain dari user di sini,
-                // seperti URL foto profil jika Anda punya accessornya
-                // 'foto_profil_url' => $user->foto_profil_url,
-                'created_at' => $user->created_at->format('Y-m-d H:i:s'),
-            ]
-        ]); // Status default 200 OK
-    }
-    
     public function register(Request $request)
     {
         $request->validate([

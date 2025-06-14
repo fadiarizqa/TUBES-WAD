@@ -3,329 +3,123 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ControllerApi;
-use App\Models\FoundedItem;
-use App\Models\LostItem;
 use App\Models\Comment;
+use App\Models\FoundedItem; 
+use App\Models\LostItem;   
 use Illuminate\Http\Request;
+use App\Http\Resources\CommentResource;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate; 
 
 class CommentApiController extends ControllerApi
 {
-    private function getParentItem(string $itemType, int $itemId) // Ini harus 2 parameter
+    private function getParentItem(string $post_type, int $itemId)
     {
-        try {
-            if ($itemType === 'found') {
-                return FoundedItem::findOrFail($itemId);
-            } elseif ($itemType === 'lost') {
-                return LostItem::findOrFail($itemId);
-            }
-            abort(response()->json([
-                'success' => false,
-                'message' => 'Tipe item tidak valid. Harus "found" atau "lost".'
-            ], 400));
-        } catch (ModelNotFoundException $e) {
-            abort(response()->json([
-                'success' => false,
-                'message' => 'Item induk tidak ditemukan.'
-            ], 404));
+        if ($itemType === 'found') {
+            return FoundedItem::findOrFail($itemId);
+        } elseif ($itemType === 'lost') {
+            return LostItem::findOrFail($itemId);
         }
-    }
-    
-    // public function index()
-    // {
-    //     return Comment::all();
-    // }
-
-    public function index(Request $request, int $id) // <-- Signature untuk GET /api/founded_items/{id}/comments
-    {
-        try {
-            $parentItem = $this->getParentItem('found', $id); // Hardcode 'found' karena rute spesifik
-            $comments = $parentItem->comments()->latest()->get();
-
-            // Format data secara manual (tanpa Resource)
-            $formattedComments = $comments->map(function ($comment) {
-                return $this->formatCommentResponse($comment);
-            });
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Daftar komentar berhasil diambil.',
-                'data' => $formattedComments->toArray()
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil komentar.',
-                'errors' => $e->getMessage()
-            ], $e->getCode() ?: 500);
-        }
-    }
-    public function store(Request $request, int $id) // <-- Signature untuk POST /api/founded_items/{id}/comments
-    {
-        try {
-            // Dapatkan objek parent item untuk verifikasi
-            // Hardcode 'found' karena rute spesifik untuk founded_items
-            $parentItem = $this->getParentItem('found', $id);
-
-            // Validasi data yang masuk dari request body
-            $request->validate([
-                // 'post_id' dan 'post_type' diambil dari URL/hardcode, tidak perlu divalidasi dari body
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-            ]);
-
-            // Buat instance Comment baru
-            $comment = new Comment([
-                'user_id' => Auth::id(), // ID user yang terautentikasi
-                'post_id' => $parentItem->id, // ID item induk yang sudah diverifikasi
-                'post_type' => 'found', // Hardcode 'found' karena rute spesifik
-                'title' => $request->input('title'),
-                'content' => $request->input('content'),
-            ]);
-
-            $comment->save();
-
-            // Kembalikan respons JSON sukses
-            return response()->json([
-                'success' => true,
-                'message' => 'Komentar berhasil dibuat.',
-                'data' => $this->formatCommentResponse($comment) // Format komentar sebagai array
-            ], 201); // 201 Created
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422); // 422 Unprocessable Entity
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda harus login untuk membuat komentar.',
-                'errors' => $e->getMessage()
-            ], 401); // 401 Unauthorized
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal membuat komentar. Item induk tidak ditemukan atau terjadi kesalahan server.',
-                'errors' => $e->getMessage()
-            ], $e->getCode() ?: 500); // Gunakan kode status dari exception jika ada, atau default 500
-        }
+        abort(response()->json(['message' => 'Invalid item type provided. Must be "found" or "lost".'], 400));
     }
 
-    // private function getParentItem(int $id, string $postType)
-    // {
-    //     if ($postType === 'found') {
-    //         return FoundedItem::findOrFail($id);
-    //     } elseif ($postType === 'lost') {
-    //         return LostItem::findOrFail($id);
-    //     }
-    //     abort(404, 'Tipe postingan tidak valid.'); 
-    // }
-
-    // public function store(Request $request, FoundedItem $item)
-    // {
-    //     $request->validate([
-    //         'post_type' => 'required|in:lost,found',
-    //         'post_id' => 'required|integer',
-    //         'title' => 'required|string|max:255',
-    //         'content' => 'required|string',
-    //     ]);
-
-    //     $comment=new Comment([
-    //         'user_id' => auth()->id(),
-    //         'title' => $request->input('title'),      
-    //         'content' => $request->input('content'),                        
-    //         'post_id' => $request->input('post_id'),   
-    //         'post_type' => $request->input('post_type'),
-    //     ]);
-
-    //     $comment->save();
-
-    //     $validated['user_id'] = Auth::id(); 
-    //     $comments = Comment::create($validated); 
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Barang ditemukan berhasil diposting!',
-    //         'data' => [
-    //             'id' => $comments->id,
-    //             'user_id' => $comments->user_id,
-    //             'post_type' => $comments->post_type,
-    //             'title' => $comments->title,
-    //             'content' => $comments->content
-    //         ],
-    //     ], 201); 
-
-    // }
-
-    // public function show(Comment $comment)
-    // {
-    //     $comment = FoundedItem::findOrFail($id);
-        
-    //     return view('founded_items.show', compact('item'));
-    //     return $comment;
-    // }
-
-    public function show(Comment $comment) // <-- Signature ini benar untuk /api/comments/{comment}
+    public function index(Request $request, string $itemType, int $itemId)
     {
-        try {
-            // Otorisasi opsional jika hanya user tertentu boleh melihat
-            // Gate::authorize('view', $comment);
+        $parentItem = $this->getParentItem($itemType, $itemId);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Detail komentar berhasil diambil.',
-                'data' => $this->formatCommentResponse($comment)
-            ]); // 200 OK
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak diizinkan melihat komentar ini.',
-                'errors' => $e->getMessage()
-            ], 403);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Komentar tidak ditemukan atau terjadi kesalahan server.',
-                'errors' => $e->getMessage()
-            ], $e instanceof ModelNotFoundException ? 404 : 500);
-        }
+        $comments = $parentItem->comments()->latest()->get();
+
+        return CommentResource::collection($comments);
     }
 
-    // public function update(Request $request, $id, Comment $comment)
-    // {
-    //     $parentItem = $this->getParentItem($id, $comment->post_type);
-
-    //     if ($comment->post_id !== $parentItem->id) {
-    //         abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-    //     }
-
-    //     Gate::authorize('update', $comment);
-
-    //     $request->validate([
-    //         'title' => 'required|string|max:255',
-    //         'content' => 'required|string',
-    //     ]);
-
-    //     $comment->update([
-    //         'title' => $request->input('title'),
-    //         'content' => $request->input('content'),
-    //     ]);
-
-    //     if ($comment->post_type === 'found') {
-    //         return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
-    //     } elseif ($comment->post_type === 'lost') {
-    //         return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
-    //     }
-    //     return back()->with('error', 'Gagal memperbarui komentar. Tipe postingan tidak valid.');
-    // }
-
-    public function update(Request $request, Comment $comment) // <-- Signature ini benar untuk /api/comments/{comment}
+    public function store(Request $request, string $itemType, int $itemId)
     {
-        try {
-            Gate::authorize('update', $comment); // Otorisasi
+        // Dapatkan objek item induk untuk memverifikasi keberadaan dan ID-nya.
+        $parentItem = $this->getParentItem($itemType, $itemId);
 
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'content' => 'required|string',
-            ]);
+        // Validasi data yang masuk dari request API.
+        // post_type dan post_id akan diambil dari parameter URL, jadi tidak perlu divalidasi dari body request.
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
 
-            $comment->update([
-                'title' => $request->input('title'),
-                'content' => $request->input('content'),
-            ]);
+        // Buat instance Comment baru.
+        $comment = new Comment([
+            'user_id' => Auth::id(), // Ambil ID pengguna yang sedang terautentikasi (membutuhkan middleware 'auth:sanctum').
+            'post_id' => $parentItem->id, // Gunakan ID dari objek item induk yang diverifikasi.
+            'post_type' => $itemType, // Gunakan tipe item dari URL (misal: 'found' atau 'lost').
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Komentar berhasil diperbarui.',
-                'data' => $this->formatCommentResponse($comment)
-            ]); // 200 OK
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi gagal.',
-                'errors' => $e->errors()
-            ], 422);
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak diizinkan memperbarui komentar ini.'
-            ], 403);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memperbarui komentar.'
-            ], 500);
-        }
+        // Simpan komentar ke database.
+        $comment->save();
+
+        // Kembalikan komentar yang baru dibuat menggunakan CommentResource dengan status HTTP 201 Created.
+        return (new CommentResource($comment))->response()->setStatusCode(201);
     }
 
-    public function edit($id, Comment $comment)
+    /**
+     * Menampilkan detail satu komentar spesifik.
+     * Endpoint: GET /api/comments/{comment}
+     *
+     * @param  \App\Models\Comment  $comment  Objek Comment yang diikat oleh Route Model Binding.
+     * @return \App\Http\Resources\CommentResource Detail komentar.
+     */
+    public function show(Comment $comment)
     {
-        $parentItem = $this->getParentItem($id, $comment->post_type);
-
-        if ($comment->post_id !== $parentItem->id) {
-            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-        }
-
-        Gate::authorize('update', $comment); 
-        return view('comments.edit', compact('parentItem', 'comment'));
+        // Mengembalikan detail komentar tunggal menggunakan CommentResource.
+        return new CommentResource($comment);
     }
 
-    // public function destroy($id, Comment $comment)
-    // {
-    //     $parentItem = $this->getParentItem($id, $comment->post_type);
-
-    //     if ($comment->post_id !== $parentItem->id) {
-    //         abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-    //     }
-
-    //     Gate::authorize('delete', $comment); 
-    //     $comment->delete();
-
-    //     if ($comment->post_type === 'found') {
-    //         return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
-    //     } elseif ($comment->post_type === 'lost') {
-    //         return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
-    //     }
-    //     return back()->with('error', 'Gagal menghapus komentar. Tipe postingan tidak valid.');
-    // }
-
-    public function destroy(Comment $comment) // <-- Signature ini benar untuk /api/comments/{comment}
+    /**
+     * Memperbarui komentar yang spesifik di database.
+     * Endpoint: PUT /api/comments/{comment}
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Comment  $comment  Objek Comment yang akan diperbarui.
+     * @return \App\Http\Resources\CommentResource|\Illuminate\Http\JsonResponse Komentar yang diperbarui.
+     */
+    public function update(Request $request, Comment $comment)
     {
-        try {
-            Gate::authorize('delete', $comment); // Otorisasi
-            $comment->delete();
+        // Otorisasi tindakan menggunakan CommentPolicy.
+        // Ini memastikan bahwa hanya pengguna yang berhak (misal: pemilik komentar) yang bisa memperbarui.
+        Gate::authorize('update', $comment);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Komentar berhasil dihapus.'
-            ], 204); // 204 No Content
-        } catch (AuthorizationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Anda tidak diizinkan menghapus komentar ini.'
-            ], 403);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat menghapus komentar.'
-            ], 500);
-        }
+        // Validasi data request untuk pembaruan.
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+
+        // Perbarui atribut komentar.
+        $comment->update([
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+        ]);
+
+        // Kembalikan komentar yang diperbarui menggunakan CommentResource.
+        return new CommentResource($comment);
     }
 
-    private function formatCommentResponse(Comment $comment): array
+    /**
+     * Menghapus komentar yang spesifik dari database.
+     * Endpoint: DELETE /api/comments/{comment}
+     *
+     * @param  \App\Models\Comment  $comment  Objek Comment yang akan dihapus.
+     * @return \Illuminate\Http\JsonResponse Respons kosong dengan status 204.
+     */
+    public function destroy(Comment $comment)
     {
-        return [
-            'id' => $comment->id,
-            'title' => $comment->title,
-            'content' => $comment->content,
-            'user_id' => $comment->user_id,
-            'user_name' => $comment->user->name ?? 'Guest', // Pastikan relasi user ada
-            'post_id' => $comment->post_id,
-            'post_type' => $comment->post_type,
-            'created_at' => $comment->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $comment->updated_at->format('Y-m-d H:i:s'),
-        ];
+        // Otorisasi tindakan menggunakan CommentPolicy.
+        // Ini memastikan bahwa hanya pengguna yang berhak (misal: pemilik komentar) yang bisa menghapus.
+        Gate::authorize('delete', $comment);
+
+        // Hapus komentar dari database.
+        $comment->delete();
+
+        // Kembalikan respons HTTP 204 No Content, menunjukkan penghapusan berhasil tanpa konten untuk dikembalikan.
+        return response()->json(null, 204);
     }
 }

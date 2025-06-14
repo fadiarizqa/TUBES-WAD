@@ -20,7 +20,6 @@ class ClaimUser extends Model
         'waktu_kehilangan',
         'deskripsi_claim',
         'bukti_kepemilikan',
-        'status'
     ];
 
     public function user() {

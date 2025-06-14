@@ -1,74 +1,66 @@
 <?php
 
-namespace App\Http\Controllers;
-use App\Models\FoundedItem;
-use App\Models\LostItem;
+namespace App\Http\Controllers; 
+
+use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\FoundedItem; 
+use App\Models\LostItem;   
 use Illuminate\Http\Request;
+use App\Http\Resources\CommentResource; 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate; 
 
 class CommentController extends Controller
 {
-    public function index()
+    private function getParentItem(string $post_type, int $itemId)
     {
-        return Comment::all();
-    }
-
-    private function getParentItem(int $id, string $postType)
-    {
-        if ($postType === 'found') {
-            return FoundedItem::findOrFail($id);
-        } elseif ($postType === 'lost') {
-            return LostItem::findOrFail($id);
+        if ($itemType === 'found') {
+            return FoundedItem::findOrFail($itemId);
+        } elseif ($itemType === 'lost') {
+            return LostItem::findOrFail($itemId);
         }
-        abort(404, 'Tipe postingan tidak valid.'); 
+        abort(response()->json(['message' => 'Invalid item type provided. Must be "found" or "lost".'], 400));
     }
 
-    public function store(Request $request, FoundedItem $item)
+    public function index(Request $request, string $itemType, int $itemId)
     {
+        $parentItem = $this->getParentItem($itemType, $itemId);
+
+        $comments = $parentItem->comments()->latest()->get();
+
+        return CommentResource::collection($comments);
+    }
+
+    public function store(Request $request, string $itemType, int $itemId)
+    {
+        $parentItem = $this->getParentItem($itemType, $itemId);
+
         $request->validate([
-            'post_type' => 'required|in:lost,found',
-            'post_id' => 'required|integer',
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
-        $comment=new Comment([
-            'user_id' => auth()->id(),
-            'title' => $request->input('title'),      
-            'content' => $request->input('content'),                        
-            'post_id' => $request->input('post_id'),   
-            'post_type' => $request->input('post_type'),
+        $comment = new Comment([
+            'user_id' => Auth::id(), 
+            'post_id' => $parentItem->id, 
+            'post_type' => $itemType, 
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
         ]);
 
         $comment->save();
 
-        if ($comment->post_type === 'found') { 
-            return redirect()->route('founded_items.show', $comment->post_id)->with('success', 'Komentar berhasil ditambahkan!');
-            return back();
-        } elseif ($comment->post_type === 'lost') { 
-            return redirect()->route('lost_items.show', $comment->post_id)->with('success', 'Komentar berhasil ditambahkan!');
-            return back();
-        }
+        return (new CommentResource($comment))->response()->setStatusCode(201);
     }
 
     public function show(Comment $comment)
     {
-        $comment = FoundedItem::findOrFail($id);
-        
-        return view('founded_items.show', compact('item'));
-        return $comment;
+        return new CommentResource($comment);
     }
 
-    public function update(Request $request, $id, Comment $comment)
+    public function update(Request $request, Comment $comment)
     {
-        $parentItem = $this->getParentItem($id, $comment->post_type);
-
-        if ($comment->post_id !== $parentItem->id) {
-            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-        }
-
         Gate::authorize('update', $comment);
 
         $request->validate([
@@ -81,42 +73,15 @@ class CommentController extends Controller
             'content' => $request->input('content'),
         ]);
 
-        if ($comment->post_type === 'found') {
-            return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
-        } elseif ($comment->post_type === 'lost') {
-            return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil diperbarui!');
-        }
-        return back()->with('error', 'Gagal memperbarui komentar. Tipe postingan tidak valid.');
+        return new CommentResource($comment);
     }
 
-    public function edit($id, Comment $comment)
+    public function destroy(Comment $comment)
     {
-        $parentItem = $this->getParentItem($id, $comment->post_type);
+        Gate::authorize('delete', $comment);
 
-        if ($comment->post_id !== $parentItem->id) {
-            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-        }
-
-        Gate::authorize('update', $comment); 
-        return view('comments.edit', compact('parentItem', 'comment'));
-    }
-
-    public function destroy($id, Comment $comment)
-    {
-        $parentItem = $this->getParentItem($id, $comment->post_type);
-
-        if ($comment->post_id !== $parentItem->id) {
-            abort(404, 'Komentar tidak ditemukan untuk item ini atau URL tidak valid.');
-        }
-
-        Gate::authorize('delete', $comment); 
         $comment->delete();
 
-        if ($comment->post_type === 'found') {
-            return redirect()->route('founded_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
-        } elseif ($comment->post_type === 'lost') {
-            return redirect()->route('lost_items.show', $parentItem->id)->with('success', 'Komentar berhasil dihapus!');
-        }
-        return back()->with('error', 'Gagal menghapus komentar. Tipe postingan tidak valid.');
+        return response()->json(null, 204);
     }
 }

@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function() {
     Route::get('/founded_items/create', [FoundedItemController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemController::class, 'show'])->name('founded_items.show');
-    Route::post('/founded_items/{id}/comments', [CommentController::class, 'index'])->name('comments.index');
     Route::post('/founded_items/{id}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::get('/founded_items/{id}/comments/{comment}/edit', [CommentController::class, 'edit'])->name('comments.edit');
     Route::put('/founded_items/{id}/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
