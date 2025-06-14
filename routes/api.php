@@ -57,11 +57,11 @@ Route::middleware('auth:sanctum')->group(function() {
     // Report
     Route::get('/reports/create', [ReportsApiController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportsApiController::class, 'store'])->name('reports.store');
-    Route::get('/reports', [ReportsApiController::class, 'index'])->name('reports.index');
-    Route::get('/reports/{id}', [ReportsApiController::class, 'show'])->name('reports.show');
-    Route::put('/reports/{id}', [ReportsApiController::class, 'update'])->name('reports.update');
-    Route::delete('/reports/{id}', [ReportsApiController::class, 'destroy'])->name('reports.destroy');
-    Route::delete('/reports/post/{report}', [ReportsApiController::class, 'destroyPost'])->name('reports.destroyPost');
+    Route::get('/admin/reports', [ReportsApiController::class, 'index'])->name('reports.index');
+    Route::get('/admin/reports/{id}', [ReportsApiController::class, 'show'])->name('reports.show');
+    Route::put('/admin/reports/{id}', [ReportsApiController::class, 'update'])->name('reports.update');
+    Route::delete('/admin/reports/{id}', [ReportsApiController::class, 'destroy'])->name('reports.destroy');
+    Route::delete('/admin/reports/post/{report}', [ReportsApiController::class, 'destroyPost'])->name('reports.destroyPost');
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseApiController::class, 'index'])->name('claim_items.response.index');
