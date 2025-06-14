@@ -18,9 +18,10 @@ use App\Http\Controllers\Admin\HomeController as AdminHomeController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function() {
 
-    // Lost Items
+    Route::get('/user', [AuthController::class, 'user']);
     Route::get('/lost_items', [LostItemApiController::class, 'index'])->name('lost_items.index');
     Route::get('/lost_items/create', [LostItemApiController::class, 'create'])->name('lost_items.create');
     Route::post('/lost_items', [LostItemApiController::class, 'store'])->name('lost_items.store');
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/founded_items/create', [FoundedItemApiController::class, 'create'])->name('founded_items.create');
     Route::post('/founded_items', [FoundedItemApiController::class, 'store'])->name('founded_items.store');
     Route::get('/founded_items/{id}', [FoundedItemApiController::class, 'show'])->name('founded_items.show');
+    Route::get('/founded_items/{id}/comments', [CommentApiController::class, 'index'])->name('comments.index');
     Route::post('/founded_items/{id}/comments', [CommentApiController::class, 'store'])->name('comments.store');
     Route::get('/founded_items/{id}/comments/{comment}/edit', [CommentApiController::class, 'edit'])->name('comments.edit');
     Route::put('/founded_items/{id}/comments/{comment}', [CommentApiController::class, 'update'])->name('comments.update');
@@ -51,22 +53,23 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/history', [HistoryApiController::class, 'index'])->name('history.index');
 
     // Claims untuk User Only
-    Route::get('/claims/create', [ClaimUserApiController::class, 'create'])->name('claim_user.create');
+    Route::get('/claims/history', [ClaimUserApiController::class, 'history'])->name('claim_user.history');
     Route::post('/claims', [ClaimUserApiController::class, 'store'])->name('claim_items.store');
 
     // Report
     Route::get('/reports/create', [ReportsApiController::class, 'create'])->name('reports.create');
     Route::post('/reports', [ReportsApiController::class, 'store'])->name('reports.store');
-    Route::get('/reports', [ReportsApiController::class, 'index'])->name('reports.index');
-    Route::get('/reports/{id}', [ReportsApiController::class, 'show'])->name('reports.show');
-    Route::put('/reports/{id}', [ReportsApiController::class, 'update'])->name('reports.update');
-    Route::delete('/reports/{id}', [ReportsApiController::class, 'destroy'])->name('reports.destroy');
-    Route::delete('/reports/post/{report}', [ReportsApiController::class, 'destroyPost'])->name('reports.destroyPost');
+    Route::get('/admin/reports', [ReportsApiController::class, 'index'])->name('reports.index');
+    Route::get('/admin/reports/{id}', [ReportsApiController::class, 'show'])->name('reports.show');
+    Route::put('/admin/reports/{id}', [ReportsApiController::class, 'update'])->name('reports.update');
+    Route::delete('/admin/reports/{id}', [ReportsApiController::class, 'destroy'])->name('reports.destroy');
+    Route::delete('/admin/reports/post/{report}', [ReportsApiController::class, 'destroyPost'])->name('reports.destroyPost');
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseApiController::class, 'index'])->name('claim_items.response.index');
-    Route::get('/admin/claims/{id}/edit', [ClaimResponseApiController::class, 'edit'])->name('claim_items.response.edit');
+    Route::delete('/admin/claims/{id}', [ClaimResponseApiController::class, 'destroy'])->name('claim_items.response.destroy');
     Route::put('/admin/claims/{id}', [ClaimResponseApiController::class, 'update'])->name('claim_items.response.update');
+    Route::get('/admin/claims/{id}', [ClaimResponseApiController::class, 'show'])->name('admin.claims.show');
 
     Route::get('/profile', [ProfileApiController::class, 'show']);
     Route::get('/profile/edit', [ProfileApiController::class, 'edit'])->name('profile.edit');
