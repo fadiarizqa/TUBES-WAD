@@ -68,5 +68,29 @@ class ClaimUserApiController extends ControllerApi
         ], 201);
     }
 
+    public function history()
+    {
+        $user = auth()->user(); // Dapatkan user yang login
+        $claims = ClaimUser::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $formattedClaims = $claims->map(function ($claim) {
+            return [
+                'id' => $claim->id,
+                'nama_lengkap' => $claim->nama_lengkap,
+                'status' => $claim->status,
+                'created_at' => $claim->created_at->format('Y-m-d H:i:s'),
+                'bukti_kepemilikan_url' => $claim->bukti_kepemilikan ? Storage::url($claim->bukti_kepemilikan) : null,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat klaim user berhasil diambil.',
+            'data' => $formattedClaims,
+        ], 200);
+    }
+
     // ... (metode index, show, history, destroy lainnya) ...
 }

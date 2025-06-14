@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/history', [HistoryApiController::class, 'index'])->name('history.index');
 
     // Claims untuk User Only
-    Route::get('/claims/create', [ClaimUserApiController::class, 'create'])->name('claim_user.create');
+    Route::get('/claims/history', [ClaimUserApiController::class, 'history'])->name('claim_user.history');
     Route::post('/claims', [ClaimUserApiController::class, 'store'])->name('claim_items.store');
 
     // Report

@@ -115,33 +115,38 @@ class ClaimResponseApiController extends ControllerApi
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request for the 'status' field.
         $request->validate([
             'status' => 'required|in:pending,approved,rejected',
         ]);
 
-        // Find the ClaimUser by ID, or throw an exception if not found.
         $claim = ClaimUser::findOrFail($id);
 
-        // Update or create the ClaimResponse for the given claim.
-        // This makes the operation idempotent.
+        // Update atau buat ClaimResponse
         $claimResponse = ClaimResponse::updateOrCreate(
-            ['claim_user_id' => $claim->id], // Condition to find the existing response
-            ['status' => $request->status]   // Data to update or create
+            ['claim_user_id' => $claim->id],
+            ['status' => $request->status]
         );
 
-        // Return a JSON response confirming the successful update and the updated data.
+        // --- Tambahkan ini: Perbarui status di ClaimUser juga ---
+        // Pastikan nilai status yang diinput sesuai dengan enum di ClaimUser
+        // Misalnya, jika status di ClaimUser lebih umum, Anda bisa mapping
+        // Untuk kasus ini, karena enum sama, kita bisa langsung set
+        $claim->status = $request->status;
+        $claim->save();
+        // ----------------------------------------------------
+
         return response()->json([
             'success' => true,
             'message' => 'Claim response status updated successfully.',
             'data' => [
                 'id' => $claimResponse->id,
                 'claim_user_id' => $claimResponse->claim_user_id,
-                'status' => $claimResponse->status,
+                'status' => $claimResponse->status, // Ini status dari ClaimResponse
+                'status_on_claim_user' => $claim->status, // Menambahkan ini untuk konfirmasi
                 'created_at' => $claimResponse->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $claimResponse->updated_at->format('Y-m-d H:i:s'),
             ],
-        ], 200); // 200 OK is standard for successful PUT/UPDATE.
+        ], 200);
     }
 
     /**

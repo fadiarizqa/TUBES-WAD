@@ -12,10 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('claim_users', function (Blueprint $table) {
-            // Tambahkan kolom 'status' setelah 'bukti_kepemilikan'
-            $table->enum('status', ['pending', 'approved', 'rejected']) // Sesuaikan nilai enum jika perlu
-                  ->default('pending')
-                  ->after('bukti_kepemilikan');
+            // Tambahkan kolom 'status' setelah 'bukti_kepemilikan' atau di akhir
+            // Anda bisa memilih untuk membuatnya nullable() atau memberikan nilai default
+            $table->string('status')->default('pending')->after('bukti_kepemilikan');
+            // Atau jika Anda tidak ingin default value:
+            // $table->string('status');
+            // Atau jika status bisa null:
+            // $table->string('status')->nullable();
         });
     }
 
@@ -25,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('claim_users', function (Blueprint $table) {
-            // Drop kolom 'status' jika migrasi di-rollback
+            // Ini penting untuk menghapus kolom jika migrasi di-rollback
             $table->dropColumn('status');
         });
     }
