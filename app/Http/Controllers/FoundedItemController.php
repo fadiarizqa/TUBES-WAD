@@ -32,13 +32,14 @@ class FoundedItemController extends Controller
             'found_date' => 'required|date',
             'status' => 'nullable|in:ditemukan,diklaim,none'
         ]);
-
+        
         $itemPhotoPath = null;
         if ($request->hasFile('item_photo')) {
             $itemPhotoPath = $request->file('item_photo')->store('found_items_photos', 'public');
         }
 
         FoundedItem::create([
+            'user_id' => auth()->id(),
             'posting_type' => $validated['posting_type'],
             'full_name' => $validated['full_name'],
             'found_item_name' => $validated['found_item_name'],

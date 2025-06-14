@@ -31,7 +31,7 @@
                         {{ $report->created_at->format('d M Y') }}<br />
                         <span class="text-gray-500 text-xs">{{ $report->created_at->format('h.i A') }}</span>
                     </td>
-                    <td class="p-3">{{ $report->reason }}</td>
+                    <td class="p-3">{{ Str::limit($report->reason, 50) }}</td>
                     <td class="p-3">
                         @if ($report->post_type == \App\Models\FoundedItem::class)
                             Barang Ditemukan
@@ -49,18 +49,32 @@
                         </span>
                     </td>
                     <td class="p-3">
-                        <a href="{{ route('admin.reports.show', $report->id) }}" class="text-green-500 hover:text-green-700 mr-2">
-                            Lihat
-                        </a>
-                        @if ($report->status == 'reviewed' && $report->post)
-                                        <form action="{{ route('admin.reports.destroyPost', $report) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini secara permanen? Tindakan ini tidak dapat dibatalkan.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
-                                                Hapus Postingan
-                                            </button>
-                                        </form>
-                                    @endif
+                        {{-- Wadah untuk tombol aksi dengan tata letak vertikal --}}
+                        <div class="flex flex-col items-start space-y-2">
+                            <a href="{{ route('admin.reports.show', $report->id) }}" class="text-blue-600 hover:text-blue-800 font-semibold">
+                                Lihat
+                            </a>
+                            
+                            @if ($report->status == 'reviewed' && $report->post)
+                                <form action="{{ route('admin.reports.destroyPost', $report) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus postingan ini secara permanen? Tindakan ini tidak dapat dibatalkan.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
+                                        Hapus Postingan
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if ($report->status == 'rejected')
+                                <form action="{{ route('admin.reports.destroy', $report->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus laporan ini?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 hover:text-red-800 font-semibold">
+                                        Hapus Laporan
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty
