@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // Claims untuk Admin Only
     Route::get('/admin/claims', [ClaimResponseApiController::class, 'index'])->name('claim_items.response.index');
-    Route::get('/admin/claims/{id}/edit', [ClaimResponseApiController::class, 'edit'])->name('claim_items.response.edit');
+    Route::delete('/admin/claims/{id}', [ClaimResponseApiController::class, 'destroy'])->name('claim_items.response.destroy');
     Route::put('/admin/claims/{id}', [ClaimResponseApiController::class, 'update'])->name('claim_items.response.update');
 
 
