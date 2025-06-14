@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ControllerApi;
 use Illuminate\Http\Request;
 use App\Models\ClaimUser;     // Don't forget to import the models!
 use App\Models\ClaimResponse; // Don't forget to import the models!
+use Illuminate\Support\Facades\Storage; // Pastikan ini diimport untuk destroy
 
 class ClaimResponseApiController extends ControllerApi
 {
@@ -39,9 +40,9 @@ class ClaimResponseApiController extends ControllerApi
                     'created_at' => $claim->claimResponse->created_at->format('Y-m-d H:i:s'),
                     'updated_at' => $claim->claimResponse->updated_at->format('Y-m-d H:i:s'),
                 ] : null,
-                'claim_date' => $claim->claim_date,
-                'status_claim_user' => $claim->status, // Status from ClaimUser model
-                'description' => $claim->description,
+                'claim_date' => $claim->waktu_kehilangan, // Diubah: sebelumnya claim_date, sekarang waktu_kehilangan
+                'status_claim_user' => $claim->status,    // Akan berfungsi setelah kolom 'status' ditambahkan ke claim_users
+                'description' => $claim->deskripsi_claim, // Diubah: sebelumnya description, sekarang deskripsi_claim
                 'created_at' => $claim->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $claim->updated_at->format('Y-m-d H:i:s'),
             ];
@@ -56,8 +57,8 @@ class ClaimResponseApiController extends ControllerApi
     }
 
     /**
-     * Retrieves details of a specific claim (GET /admin/claims/{id}/edit).
-     * While the route is 'edit', for an API, this serves as a 'show detail' function.
+     * Retrieves details of a specific claim (GET /admin/claims/{id}/edit atau GET /admin/claims/{id}).
+     * Untuk API, ini berfungsi sebagai 'show detail' function.
      */
     public function edit($id)
     {
@@ -93,9 +94,9 @@ class ClaimResponseApiController extends ControllerApi
                 'created_at' => $claim->claimResponse->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $claim->claimResponse->updated_at->format('Y-m-d H:i:s'),
             ] : null,
-            'claim_date' => $claim->claim_date,
-            'status_claim_user' => $claim->status,
-            'description' => $claim->description,
+            'claim_date' => $claim->waktu_kehilangan, // Diubah
+            'status_claim_user' => $claim->status,    // Akan berfungsi setelah kolom 'status' ditambahkan
+            'description' => $claim->deskripsi_claim, // Diubah
             'created_at' => $claim->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $claim->updated_at->format('Y-m-d H:i:s'),
         ];
@@ -143,10 +144,61 @@ class ClaimResponseApiController extends ControllerApi
         ], 200); // 200 OK is standard for successful PUT/UPDATE.
     }
 
+    /**
+     * Menampilkan detail spesifik dari sebuah klaim (GET /admin/claims/{id}).
+     */
+    public function show($id)
+    {
+        // Logika di sini akan sama persis dengan metode 'edit' Anda saat ini
+        $claim = ClaimUser::with('user', 'claimResponse', 'foundedItem')->find($id);
+
+        if (!$claim) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Claim not found.',
+                'data' => null
+            ], 404);
+        }
+
+        $formattedClaim = [
+            'id' => $claim->id,
+            'user' => $claim->user ? [
+                'id' => $claim->user->id,
+                'name' => $claim->user->name,
+                'email' => $claim->user->email,
+            ] : null,
+            'founded_item' => $claim->foundedItem ? [
+                'id' => $claim->foundedItem->id,
+                'found_item_name' => $claim->foundedItem->found_item_name,
+                'item_type' => $claim->foundedItem->item_type,
+                'item_photo_url' => $claim->foundedItem->item_photo ? asset('storage/' . $claim->foundedItem->item_photo) : null,
+            ] : null,
+            'claim_response' => $claim->claimResponse ? [
+                'id' => $claim->claimResponse->id,
+                'status' => $claim->claimResponse->status,
+                'created_at' => $claim->claimResponse->created_at->format('Y-m-d H:i:s'),
+                'updated_at' => $claim->claimResponse->updated_at->format('Y-m-d H:i:s'),
+            ] : null,
+            'claim_date' => $claim->waktu_kehilangan, // Diubah
+            'status_claim_user' => $claim->status,    // Akan berfungsi setelah kolom 'status' ditambahkan
+            'description' => $claim->deskripsi_claim, // Diubah
+            'created_at' => $claim->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => (string) $claim->updated_at->format('Y-m-d H:i:s'),
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Claim details retrieved successfully.',
+            'data' => $formattedClaim,
+        ], 200);
+    }
+
+    /**
+     * Menghapus klaim (ClaimUser dan ClaimResponse jika ada).
+     * (DELETE /admin/claims/{id})
+     */
     public function destroy($id)
     {
-        // Cari ClaimUser berdasarkan ID.
-        // Jika klaim user tidak ditemukan, tidak ada respons klaim yang bisa dihapus.
         $claim = ClaimUser::find($id);
 
         if (!$claim) {
@@ -157,56 +209,23 @@ class ClaimResponseApiController extends ControllerApi
             ], 404);
         }
 
-        // Pastikan ada respons klaim terkait dengan ClaimUser ini.
-        if (!$claim->claimResponse) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Respons klaim tidak ditemukan untuk klaim ini.',
-                'data' => null
-            ], 404);
+        // Opsional: Hapus juga file bukti_kepemilikan dari storage jika ada
+        if ($claim->bukti_kepemilikan) {
+            Storage::disk('public')->delete($claim->bukti_kepemilikan);
         }
 
-        // Otorisasi: Pastikan hanya admin yang bisa menghapus respons klaim.
-        // Asumsi: Jika user yang terautentikasi adalah admin.
-        // Anda perlu menyesuaikan ini dengan cara Anda mendefinisikan peran admin.
-        // Contoh sederhana: if (Auth::check() && Auth::user()->role !== 'admin') { ... }
-        // Atau gunakan Laravel Policies untuk otorisasi yang lebih kompleks.
-        // Untuk tujuan API admin, kita asumsikan middleware sudah cukup atau user memiliki akses.
+        // Hapus ClaimResponse terkait (jika ada)
+        if ($claim->claimResponse) {
+            $claim->claimResponse->delete();
+        }
 
-        $claimResponseId = $claim->claimResponse->id; // Ambil ID respons sebelum dihapus
-        $claim->claimResponse->delete(); // Hapus respons klaim
+        // Hapus ClaimUser
+        $claim->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Respons klaim berhasil dihapus.',
-            'data' => ['id' => $claimResponseId] // Mengembalikan ID respons yang dihapus
-        ], 200); // 200 OK adalah respons yang umum, 204 No Content juga bisa.
+            'message' => 'Klaim (termasuk respons jika ada) berhasil dihapus.',
+            'data' => ['id_klaim_user' => $id]
+        ], 200);
     }
-
-    // The 'destroy' method is commented out as there's no explicit DELETE route
-    // in your provided routes/api.php that maps to this controller for deleting a claim response.
-    // If you need this functionality, a corresponding DELETE route would need to be added.
-    /*
-    public function destroy($id)
-    {
-        $claim = ClaimUser::findOrFail($id);
-
-        if ($claim->claimResponse) {
-            $claimResponseId = $claim->claimResponse->id;
-            $claim->claimResponse->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Claim response deleted successfully.',
-                'data' => ['id' => $claimResponseId]
-            ], 200); // Or 204 No Content for successful deletion
-        }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Claim response not found for this claim.',
-            'data' => null
-        ], 404); // 404 Not Found if the response doesn't exist
-    }
-    */
 }

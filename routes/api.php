@@ -67,7 +67,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/admin/claims', [ClaimResponseApiController::class, 'index'])->name('claim_items.response.index');
     Route::delete('/admin/claims/{id}', [ClaimResponseApiController::class, 'destroy'])->name('claim_items.response.destroy');
     Route::put('/admin/claims/{id}', [ClaimResponseApiController::class, 'update'])->name('claim_items.response.update');
-
+    Route::get('/admin/claims/{id}', [ClaimResponseApiController::class, 'show'])->name('admin.claims.show');
 
     Route::get('/profile/edit', [ProfileApiController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update', [ProfileApiController::class, 'update'])->name('profile.update');
