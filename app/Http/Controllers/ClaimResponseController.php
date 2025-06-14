@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ClaimUser;       
+use App\Models\ClaimResponse;   
+use App\Models\FoundedItem;     
+
 
 class ClaimResponseController extends Controller
 {
