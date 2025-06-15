@@ -71,11 +71,11 @@ cd TUBES-WAD
   npm install
   ```
 ### 3. Konfigurasi Environment
-- **Salin file `.env.example` menjadi `.env`
+- Salin file `.env.example` menjadi `.env`
   ```bash
   cp .env.example .env
   ```
-- **Generate application key
+- Generate application key
   ```bash
   php artisan key:generate
   ```
