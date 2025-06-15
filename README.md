@@ -100,7 +100,7 @@ cd TUBES-WAD
 
 | No | Nama                            | NIM           | Peran                                                                                                          | Username GitHub       |
 |----|---------------------------------|---------------|---------------------------------------------------------------------------------------------------------------|------------------------|
-| 1  | Muhammad Fadli Deandri Putra    | 102022300018  | **Pengguna:** Mengklaim Barang Hilang  <br> **Admin:** Login, Melihat Report Postingan, Ubah Status, Hapus Postingan | `deandri3000`          |
+| 1  | Muhammad Fadli Deandri Putra    | 102022300018  | **Pengguna:** Pembuatan laporan  <br> **Admin:** Login, Melihat Report Postingan, Ubah Status, Hapus Postingan | `deandri3000`          |
 | 2  | Mellafesa Rofida                | 102022330095  | **Pengguna:** Registrasi, Login, Edit Postingan, Hapus Postingan, Buat Postingan Barang Ditemukan             | `Mellafesa`            |
 | 3  | Casta Garneta                   | 102022330303  | **Pengguna:** Klaim Barang Hilang, Lihat Status Riwayat Klaim  <br> **Admin:** Lihat Pengajuan, Hapus, Ubah Status | `castagh`, `casagh`    |
 | 4  | Naufal Rahmat Muzakky           | 102022300167  | **Pengguna:** Buat Postingan Barang Hilang, Edit & Hapus Foto Profil                                          | `Marcy545`             |
